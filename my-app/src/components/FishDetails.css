@@ -1,0 +1,17 @@
+.fish-details-container {
+    text-align: center;
+    padding-top: 20px;
+  }
+  
+  .fish-image {
+    width: 500px;
+    height: auto;
+    margin-top: 30px;
+    top: 50px;
+  }
+  
+  .fish-name {
+    margin-top: 50px;
+    color: rgb(42, 42, 43);
+  }
+  

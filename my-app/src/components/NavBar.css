@@ -1,0 +1,21 @@
+.navbar {
+    background-color: #10297a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 20px;
+    color: white;
+  }
+
+  .navbar img{
+    position: relative;
+    height: 60px;
+    left: 90px;
+    top: 0px;
+  }
+
+  .app-name h1{
+    margin: -20px 0 0 0;
+    position: relative;
+    top: 40px; /* Move the h1 down by 10px */
+  }
