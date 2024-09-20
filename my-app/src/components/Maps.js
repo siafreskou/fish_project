@@ -16,7 +16,7 @@ function Map() {
           setPosition([latitude, longitude]);  // Set latitude and longitude in state
         },
         (err) => {
-          setError(err.message);  // Handle errors, such as permission denied
+          setError(err.message);  
         }
       );
     } else {
@@ -39,13 +39,13 @@ function Map() {
             scrollWheelZoom={true}
             style={{ height: '200px', width: '40%' }}  
           >
-            {/* Load the OpenStreetMap tiles */}
+            
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             
-            {/* Add a marker at the user's location */}
+            
             <Marker position={position}>
               <Popup>
                 You are here: {position[0]}, {position[1]}
