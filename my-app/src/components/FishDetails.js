@@ -1,36 +1,91 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import './FishDetails.css';
+import axios from 'axios';
 
 const FishDetails = () => {
-  const { fishName } = useParams(); // Get the fish name from the URL
+  const { fishName } = useParams();
+  const location = useLocation();
+  const fishbaseId = location.state?.fishbaseId; 
 
-  const fishImages = {
-    smelt: 'https://upload.wikimedia.org/wikipedia/commons/2/2b/Pond_smelt_illustration.jpg',
-    trout: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYo4NHuSXvpvIwTjG3TUVmF_oSG5CPwUFjsA&s',
-    sardine: 'https://www.msc.org/images/default-source/msc-english/content-banner/fish-to-eat/sardine.jpg?sfvrsn=8f6e89ac_7',
-    swordfish: 'https://www.fisheries.noaa.gov/s3//styles/original/s3/2022-09/640x427-Swordfish-NOAAFisheries.png?itok=D35ccWSJ',
-    seabass: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyVJ5IzvvvpHne6YR0j0fJcX7hev6coaPseA&s',
-    redfish: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZjuF_F27nMncvavwqeMcEjR1HQjVORhZB1g&s',
-    sole: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1q6YcJ-NOf-ik_e2JyC30h6QoRETURvAAEw&s'
-  };
+  const [fishData, setFishData] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
 
-  const fishImage = fishImages[fishName] || 'https://example.com/default-fish.jpg'; 
+
+  useEffect(() => {
+    const fetchFishData = async () => {
+      try {
+        const response = await axios.get(
+          `https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_info?id=${fishbaseId}`
+        );
+        console.log(response.data); 
+        
+        if (response.data.result) {
+          setFishData(response.data.result); 
+        } else {
+          setError('No data found for this fish.');
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching fish data:', error);
+        setError('Failed to fetch fish data'); 
+        setLoading(false); 
+      }
+    };
+
+    if (fishbaseId) {
+      fetchFishData();
+    }
+  }, [fishbaseId]); 
+
+  if (loading) {
+    return <p>Loading...</p>; 
+  }
+
+  if (error) {
+    return <p>{error}</p>; 
+  }
 
   return (
     <div>
-      <img
-        className="fish-image"
-        src={fishImage}
-        alt={fishName}
-        style={{ width: '500px', height: 'auto' }}
-      />
-      <h1 className="fish-name">{fishName}</h1>
-      <p className='location'>Location</p>
+      <h1 className="fish-name">{fishData.name}</h1> 
       
+
+      {/* Display the fish data if available */}
+      {fishData && (
+        <div className="fish-info">
+          {/* Display images if available */}
+          {fishData.photos && fishData.photos.length > 0 && (
+            <div className="fish-photos">
+              {fishData.photos.map((photo, index) => (
+                <img key={index} src={photo} alt={`Fish ${index}`} style={{ width: '200px', height: 'auto', margin: '10px' }} />
+              ))}
+            </div>
+          )}
+          <h2>Fish Information</h2>
+          <p><strong>Environment:</strong> {fishData.environment ? fishData.environment.join(', ') : 'N/A'}</p>
+          <p><strong>Distribution:</strong> {fishData.distribution}</p>
+          <p><strong>Distribution Range:</strong> {fishData.distribution_range}</p>
+          <p><strong>Climate Zone:</strong> {fishData.climate_zone }</p>
+          <p><strong>Max Age:</strong> {fishData.dimensions?.max_age} years</p>
+          <p><strong>Max Depth:</strong> {fishData.dimensions?.max_depth} m</p>
+          <p><strong>Min Depth:</strong> {fishData.dimensions?.min_depth} m</p>
+          <p><strong>Max Length:</strong> {fishData.dimensions?.max_length} cm</p>
+          <p><strong>Max Weight:</strong> {fishData.dimensions?.max_weight} kg</p>
+          <p><strong>Average Length:</strong> {fishData.dimensions?.average_length} cm</p>
+          <p><strong>IUCN Status:</strong> {fishData.iucn_status }</p>
+          <p><strong>Biology:</strong> {fishData.biology}</p>
+          <p><strong>Threat to Humans:</strong> {fishData.threat_to_humans}</p>
+          
+        </div>
+      )}
     </div>
   );
 };
 
 export default FishDetails;
+
+
+
 
