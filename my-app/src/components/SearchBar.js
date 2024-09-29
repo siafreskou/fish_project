@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Papa from 'papaparse'; 
-import axios from 'axios'; // Import axios for API call
+import axios from 'axios'; 
 import './SearchBar.css';
 
 const CSV_FILE_PATH = '/GRSF_common_names.csv';
@@ -10,10 +10,10 @@ const CSV_FILE_PATH = '/GRSF_common_names.csv';
 const Searchbar = ({ setSearchTerm, searchTerm }) => {
   const [fishList, setFishList] = useState([]); 
   const [filteredFishes, setFilteredFishes] = useState([]);
-  const searchBarRef = useRef(null);
+  const searchBarRef = useRef();
   const navigate = useNavigate();
 
-  // Fetch CSV data (as you have)
+  // Fetch CSV data 
   useEffect(() => {
     Papa.parse(CSV_FILE_PATH, {
       download: true,
@@ -48,10 +48,12 @@ const Searchbar = ({ setSearchTerm, searchTerm }) => {
       const response = await axios.get(
         `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`
       );
-      const fishData = response.data.result[0]; // Extract the first result object
-    const fishbaseId = fishData?.fishbase_id; // Get the fishbase_id
-      console.log('API Response:', response.data,'FishBase ID:', fishbaseId); 
-      navigate(`/fish/${fish}`, { state: { fishbaseId } });
+    const fishData = response.data.result[0]; 
+    const fishbaseId = fishData?.fishbase_id;
+    const fish3aCODE = fishData?._3a_code; 
+    const fishgbif_id = fishData?.gbif_id; 
+      console.log('API Response:', response.data,'FishBase ID:', fishbaseId,'3aCODE:',fish3aCODE,"gbif_id",fishgbif_id); 
+     navigate(`/fish/${fish}`, { state: { fishbaseId , fish3aCODE, fishgbif_id} });
     } catch (error) {
       console.error('Error fetching fish data:', error);
     }
@@ -73,8 +75,8 @@ const Searchbar = ({ setSearchTerm, searchTerm }) => {
 
   // Call API when a fish suggestion is clicked
   const handleFishClick = (fish) => {
-    fetchFishData(fish); // Call the API when a fish is clicked
-    navigate(`/fish/${fish}`); // Navigate to the selected fish page
+    fetchFishData(fish); // Call the API 
+    // navigate(`/fish/${fish}`); 
   };
 
   // Call API when pressing Enter
@@ -88,9 +90,9 @@ const Searchbar = ({ setSearchTerm, searchTerm }) => {
   
         if (exactMatch) {
           fetchFishData(exactMatch);
-          navigate(`/fish/${exactMatch}`);
+          // navigate(`/fish/${exactMatch}`);
         } else if (filteredFishes.length > 0) {
-          navigate(`/fish/${filteredFishes[0]}`);
+          // navigate(`/fish/${filteredFishes[0]}`);
         }
     }
   };
@@ -103,7 +105,7 @@ const Searchbar = ({ setSearchTerm, searchTerm }) => {
         <input
           className="input-field"
           placeholder="Type to search..."
-          value={searchTerm} // Use searchTerm from props
+          value={searchTerm} 
           onChange={handleSearchChange}
           onKeyDown={handleKeyDown}
         />

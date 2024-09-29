@@ -29,7 +29,7 @@ function Map() {
       {error && <p>Error: {error}</p>}
       
       {position ? (
-        <>
+        <div>
           <p>Your Latitude: {position[0]}</p>
           <p>Your Longitude: {position[1]}</p>
 
@@ -52,7 +52,7 @@ function Map() {
               </Popup>
             </Marker>
           </MapContainer>
-        </>
+        </div>
       ) : (
         <p>Locating you...</p>
       )}

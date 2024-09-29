@@ -12,28 +12,27 @@ function App() {
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
 
   return (
-    <Router>
-      <div className="App">
+    <div className="App">
+      <div>
         <div className='navbar'>
           <Navbar />
         </div>
 
         <Routes>
           <Route path="/" element={
-            <>
+            <div>
               <div className="findfisher"><Findfisher /></div>
               <div className="findfisher2"><Findfisher2 /></div>
               <div className='search'>
-                <Searchbar setSearchTerm={setSearchTerm} /> {/* Pass setSearchTerm to Searchbar */}
+                <Searchbar setSearchTerm={setSearchTerm} /> 
               </div>
-              {/* <div className='location'><Map /></div> */}
               <div className="location"><Map /></div>
-            </>
+            </div>
           } />
           <Route path="/fish/:fishName" element={<FishDetails />} />
         </Routes>
       </div>
-    </Router>
+    </div>
   );
 }
 
