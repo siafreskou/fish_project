@@ -1,20 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import Papa from 'papaparse'; 
-import axios from 'axios'; 
-import './SearchBar.css';
+import React, { useState, useEffect, useRef } from "react";
+import { FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import Papa from "papaparse";
+import axios from "axios";
+import "./SearchBar.css";
 
-const CSV_FILE_PATH = '/GRSF_common_names.csv';
+const CSV_FILE_PATH = "/GRSF_common_names.csv";
 
-const Searchbar = ({ setSearchTerm, searchTerm }) => {
-  const [fishList, setFishList] = useState([]); 
+const Searchbar = () => {
+  const [fishList, setFishList] = useState([]);
   const [filteredFishes, setFilteredFishes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const searchBarRef = useRef();
   const navigate = useNavigate();
 
-  // Fetch CSV data 
-  useEffect(() => {
+   // Fetch CSV data 
+   useEffect(() => {
     Papa.parse(CSV_FILE_PATH, {
       download: true,
       header: false,
@@ -28,44 +29,68 @@ const Searchbar = ({ setSearchTerm, searchTerm }) => {
       }
     });
   }, []);
-
+  
   // Close suggestions when clicking outside the search bar
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target)
+      ) {
         setFilteredFishes([]);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [searchBarRef]);
 
   // Function to call API for the selected fish
-  const fetchFishData = async (fish) => {
-    try {
-      const response = await axios.get(
-        `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`
-      );
-    const fishData = response.data.result[0]; 
-    const fishbaseId = fishData?.fishbase_id;
-    const fish3aCODE = fishData?._3a_code; 
-    const fishgbif_id = fishData?.gbif_id; 
-      console.log('API Response:', response.data,'FishBase ID:', fishbaseId,'3aCODE:',fish3aCODE,"gbif_id",fishgbif_id); 
-     navigate(`/fish/${fish}`, { state: { fishbaseId , fish3aCODE, fishgbif_id} });
-    } catch (error) {
-      console.error('Error fetching fish data:', error);
-    }
+  const fetchFishData = (fish) => {
+    axios
+      .get(`/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        const fishData = response.data.result[0];
+        const fishbaseId = fishData?.fishbase_id;
+        const fish3aCODE = fishData?._3a_code;
+        const fishgbif_id = fishData?.gbif_id;
+
+        const hasFish = fishbaseId && fish3aCODE && fishgbif_id;
+
+        console.log(
+          "API Response:",
+          response.data,
+          "FishBase ID:",
+          fishbaseId,
+          "3aCODE:",
+          fish3aCODE,
+          "gbif_id",
+          fishgbif_id
+        );
+        hasFish &&
+          navigate(`/fish/${fish}`, {
+            state: { fishbaseId, fish3aCODE, fishgbif_id },
+          });
+      })
+      .catch((error) => {
+        console.error("Error fetching fish data:", error);
+      });
   };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    setSearchTerm(value); 
+    setSearchTerm(value);
 
     if (value.length > 0) {
       const filtered = fishList.filter(
-        (fish) => typeof fish === 'string' && fish.toLowerCase().includes(value.toLowerCase())
+        (fish) =>
+          typeof fish === "string" &&
+          fish.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredFishes(filtered);
     } else {
@@ -75,28 +100,29 @@ const Searchbar = ({ setSearchTerm, searchTerm }) => {
 
   // Call API when a fish suggestion is clicked
   const handleFishClick = (fish) => {
-    fetchFishData(fish); // Call the API 
-    // navigate(`/fish/${fish}`); 
+    fetchFishData(fish); // Call the API
+    // navigate(`/fish/${fish}`);
   };
 
   // Call API when pressing Enter
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      const searchValue = searchTerm ? searchTerm.trim() : '';
-  
-      const exactMatch = fishList.find((fish) => 
-        typeof fish === 'string' && fish.toLowerCase() === searchValue.toLowerCase()
+    if (e.key === "Enter") {
+      const searchValue = searchTerm ? searchTerm.trim() : "";
+
+      const exactMatch = fishList.find(
+        (fish) =>
+          typeof fish === "string" &&
+          fish.toLowerCase() === searchValue.toLowerCase()
       );
-  
-        if (exactMatch) {
-          fetchFishData(exactMatch);
-          // navigate(`/fish/${exactMatch}`);
-        } else if (filteredFishes.length > 0) {
-          // navigate(`/fish/${filteredFishes[0]}`);
-        }
+
+      if (exactMatch) {
+        fetchFishData(exactMatch);
+        // navigate(`/fish/${exactMatch}`);
+      } else if (filteredFishes.length > 0) {
+        // navigate(`/fish/${filteredFishes[0]}`);
+      }
     }
   };
-  
 
   return (
     <div className="search-container" ref={searchBarRef}>
@@ -105,7 +131,7 @@ const Searchbar = ({ setSearchTerm, searchTerm }) => {
         <input
           className="input-field"
           placeholder="Type to search..."
-          value={searchTerm} 
+          value={searchTerm}
           onChange={handleSearchChange}
           onKeyDown={handleKeyDown}
         />
@@ -114,7 +140,11 @@ const Searchbar = ({ setSearchTerm, searchTerm }) => {
       {filteredFishes.length > 0 && (
         <div className="suggestions-list">
           {filteredFishes.map((fish, index) => (
-            <li key={index} className="suggestion-item" onClick={() => handleFishClick(fish)}>
+            <li
+              key={index}
+              className="suggestion-item"
+              onClick={() => handleFishClick(fish)}
+            >
               {fish}
             </li>
           ))}
@@ -125,7 +155,6 @@ const Searchbar = ({ setSearchTerm, searchTerm }) => {
 };
 
 export default Searchbar;
-
 
 
 

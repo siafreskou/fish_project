@@ -15,3 +15,24 @@
     color: rgb(42, 42, 43);
   }
   
+  .fish-photos {
+    width: 1300px; /* Set the width of the carousel container to 100% */
+    margin: 0 auto; /* Center the carousel */
+  }
+  
+  .fish-photos img {
+    width: 100%; /* Ensure images take up the full width of their container */
+    height: 100px; /* Maintain aspect ratio */
+  }
+  
+  .slick-next {
+    right: 10px; /* Adjust position of next button */
+  }
+  
+  .slick-prev {
+    left: 10px; /* Adjust position of previous button */
+  }
+  
+  .slick-next::before, .slick-prev::before {
+    content: ''; /* Remove the default arrow icons */
+  }
