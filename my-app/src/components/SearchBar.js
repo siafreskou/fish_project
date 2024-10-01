@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Papa from "papaparse";
 import axios from "axios";
 import "./SearchBar.css";
-
 const CSV_FILE_PATH = "/GRSF_common_names.csv";
 
 const Searchbar = () => {
@@ -13,6 +12,7 @@ const Searchbar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const searchBarRef = useRef();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
    // Fetch CSV data 
    useEffect(() => {
@@ -48,8 +48,9 @@ const Searchbar = () => {
 
   // Function to call API for the selected fish
   const fetchFishData = (fish) => {
+    setLoading(true);
     axios
-      .get(`/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`, {
+      .get(` https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -79,6 +80,9 @@ const Searchbar = () => {
       })
       .catch((error) => {
         console.error("Error fetching fish data:", error);
+      })
+      .finally(() => {
+        setLoading(false); // Stop loader when the API call ends
       });
   };
 
@@ -101,7 +105,6 @@ const Searchbar = () => {
   // Call API when a fish suggestion is clicked
   const handleFishClick = (fish) => {
     fetchFishData(fish); // Call the API
-    // navigate(`/fish/${fish}`);
   };
 
   // Call API when pressing Enter
@@ -117,9 +120,7 @@ const Searchbar = () => {
 
       if (exactMatch) {
         fetchFishData(exactMatch);
-        // navigate(`/fish/${exactMatch}`);
       } else if (filteredFishes.length > 0) {
-        // navigate(`/fish/${filteredFishes[0]}`);
       }
     }
   };
@@ -137,6 +138,7 @@ const Searchbar = () => {
         />
       </div>
 
+      {loading && <div className="loader"></div>}
       {filteredFishes.length > 0 && (
         <div className="suggestions-list">
           {filteredFishes.map((fish, index) => (

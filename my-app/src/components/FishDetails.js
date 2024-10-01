@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./FishDetails.css";
 import axios from "axios";
-import Slider from "react-slick";  // Import Slider component from react-slick
+import Slider from "react-slick";  
+import "slick-carousel/slick/slick.css";  
+import "slick-carousel/slick/slick-theme.css";  
 
-import "slick-carousel/slick/slick.css";  // Import slick CSS
-import "slick-carousel/slick/slick-theme.css";  // Import slick-theme CSS
 
 const FishDetails = () => {
   const location = useLocation();
@@ -82,7 +82,7 @@ const FishDetails = () => {
 
   const fetchFishDataFromFishBase = () => {
     axios
-      .get(`/grsf/grsf-api/resources/fishbase_info?id=${fishbaseId}`)
+      .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_info?id=${fishbaseId}`)
       .then((response) => {
         console.log("FishBase API response:", response.data);
         if (response.data.result) {
@@ -103,17 +103,18 @@ const FishDetails = () => {
 
   const fetchFishDataFrom3aCODE = () => {
     axios
-      .get(`/grsf/grsf-api/resources/getfisheriesbasic?species_code=${fish3aCODE}`)
+      .get(` https://isl.ics.forth.gr/grsf/grsf-api/resources/getfisheriesbasic?species_code=${fish3aCODE}`)
       .then((response) => {
         console.log("3aCODE API response:", response.data);
 
-        if (response.data.result) {
+        if (response.data) {
           setFishData((prevData) => ({
             ...prevData,
-            fish3aData: response.data.result,
+            fish3aData: response.data,  
           }));
           setHasData(true);
         }
+        
       })
       .catch((error) => {
         console.error("Error fetching fish data from 3aCODE:", error);
@@ -131,6 +132,8 @@ const FishDetails = () => {
     if (fish3aCODE) fetchFishDataFrom3aCODE();
   }, [fish3aCODE]);
 
+    console.log("Updated fish3aData:", fishData.fish3aData);
+  
   return (
     <div>
       <h1 className="fish-name">
@@ -159,77 +162,68 @@ const FishDetails = () => {
 
           {fishData.fishBaseData && (
             <div>
-              <p>
-                <strong>Environment:</strong>
+              <p className="environment">
+                <strong>Environment: </strong>
                 {fishData.fishBaseData.environment
                   ? fishData.fishBaseData.environment.join(", ")
                   : "N/A"}
               </p>
-              <p>
+              <p className="distribution">
                 <strong>Distribution:</strong>
                 {fishData.fishBaseData.distribution}
               </p>
-              <p>
+              <p className="distrbution_range">
                 <strong>Distribution Range:</strong>
                 {fishData.fishBaseData.dimensions?.distribution_range}
               </p>
-              <p>
+              <p className="climate">
                 <strong>Climate Zone:</strong>
                 {fishData.fishBaseData.climate_zone}
               </p>
-              <p>
+              <p className="age">
                 <strong>Max Age:</strong>
                 {fishData.fishBaseData.dimensions?.max_age} years
               </p>
-              <p>
+              <p className="depth">
                 <strong>Max Depth:</strong>
                 {fishData.fishBaseData.dimensions?.max_depth} m
               </p>
-              <p>
+              <p className="length">
                 <strong>Max Length:</strong>
                 {fishData.fishBaseData.dimensions?.max_length} cm
               </p>
-              <p>
+              <p className="weight">
                 <strong>Max Weight:</strong>
                 {fishData.fishBaseData.dimensions?.max_weight} kg
               </p>
-              <p>
+              <p className="av_length">
                 <strong>Average Length:</strong>
                 {fishData.fishBaseData.dimensions?.average_length} cm
               </p>
-              <p>
+              <p className="status">
                 <strong>IUCN Status:</strong>
                 {fishData.fishBaseData.iucn_status}
               </p>
-              <p>
+              <p className="biology">
                 <strong>Biology:</strong> {fishData.fishBaseData.biology}
               </p>
-              <p>
+              <p className="threat">
                 <strong>Threat to Humans:</strong>
                 {fishData.fishBaseData.threat_to_humans}
               </p>
             </div>
           )}
 
-          <h2>3aCODE Information</h2>
-          {fishData.fish3aData && (
-            <div>
-              <p>
-                <strong>Biology:</strong> {fishData.fish3aData.biology}
-              </p>
-              <p>
-                <strong>IUCN Status:</strong> {fishData.fish3aData.iucn_status}
-              </p>
-              <p>
-                <strong>Threat to Humans:</strong>
-                {fishData.fish3aData.threat_to_humans}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+        {fishData.fish3aData?.[0] && (
+          <div>
+            <p><strong>Flag State:</strong> {fishData.fish3aData[0].flag_states.flag_state_name}</p>
+            <p><strong>Fishing Gear:</strong> {fishData.fish3aData[0].fishing_gears.fishing_gear_name}</p>
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+);
 };
 
 export default FishDetails;
