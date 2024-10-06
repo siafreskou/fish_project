@@ -1,42 +1,70 @@
 .fish-details-container {
-    text-align: center;
-    padding-top: 20px;
-  }
-  
-  .fish-image {
-    width: 500px;
-    height: auto;
-    margin-top: 30px;
-    top: 50px;
-  }
-  
-  .fish-name {
-    margin-top: 50px;
-    color: rgb(42, 42, 43);
-  }
-  
-  .fish-photos {
-    width: 1300px; /* Set the width of the carousel container to 100% */
-    margin: 0 auto; /* Center the carousel */
-  }
-  
-  .fish-photos img {
-    width: 100%; /* Ensure images take up the full width of their container */
-    height: 100px; /* Maintain aspect ratio */
-  }
-  
-  .slick-next {
-    right: 10px; /* Adjust position of next button */
-  }
-  
-  .slick-prev {
-    left: 10px; /* Adjust position of previous button */
-  }
-  
-  .slick-next::before, .slick-prev::before {
-    content: ''; /* Remove the default arrow icons */
+  text-align: center;
+  padding-top: 20px;
+}
+
+.fish-image {
+  width: 500px;
+  height: auto;
+  margin-top: 30px;
+  top: 50px;
+}
+
+.fish-name {
+  margin-top: 50px;
+  color: rgb(42, 42, 43);
+}
+
+.fish-photos {
+  width: 1300px; /* Set the width of the carousel container to 100% */
+  margin: 0 auto; /* Center the carousel */
+}
+
+.fish-photos img {
+  width: 100%; /* Ensure images take up the full width of their container */
+  height: 100px; /* Maintain aspect ratio */
+}
+
+.slick-next {
+  right: 10px; /* Adjust position of next button */
+}
+
+.slick-prev {
+  left: 10px; /* Adjust position of previous button */
+}
+
+.slick-next::before,
+.slick-prev::before {
+  content: ""; /* Remove the default arrow icons */
+}
+
+.environment {
+  font-size: 20px;
+}
+
+.info_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .first_tags{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 90px;
+    margin-top: 60px;
   }
 
-  .environment{
-    font-size: 20px;
+  .second_tags{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 90px;
+    margin-top: 30px;
   }
+}
+
+
+  

@@ -14,22 +14,22 @@ const Searchbar = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-   // Fetch CSV data 
-   useEffect(() => {
+  // Fetch CSV data
+  useEffect(() => {
     Papa.parse(CSV_FILE_PATH, {
       download: true,
       header: false,
       complete: (result) => {
-        const fishNames = result.data.map((row) => row[0]); 
-        console.log('CSV Data:', fishNames);
+        const fishNames = result.data.map((row) => row[0]);
+        console.log("CSV Data:", fishNames);
         setFishList(fishNames);
       },
       error: (error) => {
-        console.error('Error fetching or parsing CSV:', error);
-      }
+        console.error("Error fetching or parsing CSV:", error);
+      },
     });
   }, []);
-  
+
   // Close suggestions when clicking outside the search bar
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -50,7 +50,7 @@ const Searchbar = () => {
   const fetchFishData = (fish) => {
     setLoading(true);
     axios
-      .get(` https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`, {
+      .get(`/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`, {
         headers: {
           "Content-Type": "application/json",
         },

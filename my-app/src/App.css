@@ -1,5 +1,3 @@
-
-
 .App {
   text-align: center;
 }
@@ -30,25 +28,27 @@
   color: #61dafb;
 }
 
-
 .findfisher {
   position: relative;
   font-size: 30px;
-  left: 400px;
   color: rgb(21, 22, 128);
-  height: 160px;
-  top: 120px;
+
+  h1 {
+    margin: 0;
+  }
 }
 
-.findfisher2{
+.findfisher2 {
   position: relative;
-  left: 400px;
   font-size: 23px;
   color: rgb(58, 95, 151);
-  height: 200px;
+
+  h1 {
+    margin: 0;
+  }
 }
 
-body{
+body {
   background-color: #8ebbc7;
 }
 
