@@ -2,7 +2,7 @@
     display: flex;
     width: 100%;
     align-items: center;
-    border: 2px solid rgb(14, 38, 116);
+    border: 2px solid rgb(114, 114, 114);
     padding: 8px;
     background-color: rgba(240, 248, 255, 0.301);
     border-radius: 0.4rem;
@@ -36,7 +36,7 @@
 
     .title_2{
       font-weight: bold;
-      color: blue;
+      color: rgb(0, 0, 0);
       white-space: nowrap;
     }
   }

@@ -6,6 +6,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Tag from "./Tags/Tag";
+import Text from "./Text/Text";
 
 const FishDetails = () => {
   const location = useLocation();
@@ -82,7 +83,7 @@ const FishDetails = () => {
 
   const fetchFishDataFromFishBase = () => {
     axios
-      .get(`/grsf/grsf-api/resources/fishbase_info?id=${fishbaseId}`)
+      .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_info?id=${fishbaseId}`)
       .then((response) => {
         console.log("FishBase API response:", response.data);
         if (response.data.result) {
@@ -104,7 +105,7 @@ const FishDetails = () => {
   const fetchFishDataFrom3aCODE = () => {
     axios
       .get(
-        `/grsf/grsf-api/resources/getfisheriesbasic?species_code=${fish3aCODE}`
+        `https://isl.ics.forth.gr/grsf/grsf-api/resources/getfisheriesbasic?species_code=${fish3aCODE}`
       )
       .then((response) => {
         console.log("3aCODE API response:", response.data);
@@ -171,31 +172,39 @@ const FishDetails = () => {
                 <Tag info={fishData.fishBaseData} type="max_length"/>
               </div>
 
-              <div className="second_tags">
-              <Tag info={fishData.fishBaseData} type="max_weight"/>
+                <div className="second_tags">
+                <Tag info={fishData.fishBaseData} type="max_weight"/>
 
-              <Tag info={fishData.fishBaseData} type="average_length"/>
+                <Tag info={fishData.fishBaseData} type="average_length"/>
 
-              <Tag info={fishData.fishBaseData} type="status"/>
+                <Tag info={fishData.fishBaseData} type="status"/>
               </div>
-              <p className="environment">
-                <strong>Environment: </strong>
-                {fishData.fishBaseData.environment
-                  ? fishData.fishBaseData.environment.join(", ")
-                  : "N/A"}
-              </p>
-              <p className="distribution">
+
+              <div className="text_container">
+                <Text info={fishData.fishBaseData} type="environment"/>
+                <Text info={fishData.fishBaseData} type="biology"/>
+                <Text info={fishData.fishBaseData} type="distribution"/>
+                <Text info={fishData.fishBaseData} type="climate"/>
+                <Text info={fishData.fishBaseData} type="threat"/>
+              </div>
+                {/* <p className="environment">
+                  <strong>Environment: </strong>
+                  {fishData.fishBaseData.environment
+                    ? fishData.fishBaseData.environment.join(", ")
+                    : "N/A"}
+                </p> */}
+              {/* <p className="distribution">
                 <strong>Distribution:</strong>
                 {fishData.fishBaseData.distribution}
-              </p>
+              </p> */}
               <p className="distrbution_range">
                 <strong>Distribution Range:</strong>
                 {fishData.fishBaseData.dimensions?.distribution_range}
               </p>
-              <p className="climate">
+              {/* <p className="climate">
                 <strong>Climate Zone:</strong>
                 {fishData.fishBaseData.climate_zone}
-              </p>
+              </p> */}
               {/* <p className="age">
                 <strong>Max Age:</strong>
                 {fishData.fishBaseData.dimensions?.max_age} years
@@ -220,13 +229,13 @@ const FishDetails = () => {
                 <strong>IUCN Status:</strong>
                 {fishData.fishBaseData.iucn_status}
               </p> */}
-              <p className="biology">
+              {/* <p className="biology">
                 <strong>Biology:</strong> {fishData.fishBaseData.biology}
-              </p>
-              <p className="threat">
+              </p> */}
+              {/* <p className="threat">
                 <strong>Threat to Humans:</strong>
                 {fishData.fishBaseData.threat_to_humans}
-              </p>
+              </p> */}
             </div>
           )}
 

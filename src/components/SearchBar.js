@@ -50,7 +50,7 @@ const Searchbar = () => {
   const fetchFishData = (fish) => {
     setLoading(true);
     axios
-      .get(`/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`, {
+      .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`, {
         headers: {
           "Content-Type": "application/json",
         },
