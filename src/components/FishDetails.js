@@ -15,6 +15,7 @@ const FishDetails = () => {
   const [fishData, setFishData] = useState({});
   const [loading, setLoading] = useState(true);
   const [hasData, setHasData] = useState(false);
+  const [showMore, setShowMore] = useState(false); // State for toggling 'Show More'
 
   // Custom Next Arrow Component
   const CustomNextArrow = ({ className, style, onClick }) => {
@@ -83,7 +84,9 @@ const FishDetails = () => {
 
   const fetchFishDataFromFishBase = () => {
     axios
-      .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_info?id=${fishbaseId}`)
+      .get(
+        `https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_info?id=${fishbaseId}`
+      )
       .then((response) => {
         console.log("FishBase API response:", response.data);
         if (response.data.result) {
@@ -136,18 +139,64 @@ const FishDetails = () => {
 
   console.log("Updated fish3aData:", fishData.fish3aData);
 
+  // Function to filter out unique fishing gears and display the top 5 most popular first
+  const getUniqueAndOrderedFishingGears = (data) => {
+    const gearCount = {}; 
+
+    // Count the occurrences of each fishing gear
+    data.forEach((item) => {
+      const gearName = item.fishing_gears?.fishing_gear_name;
+      if (gearName) {
+        gearCount[gearName] = (gearCount[gearName] || 0) + 1;
+      }
+    });
+
+    // Sort the gears by frequency (most popular first)
+    const sortedGears = Object.keys(gearCount).sort(
+      (a, b) => gearCount[b] - gearCount[a]
+    );
+
+    // Separate the top 5 most popular gears
+    const top5Gears = sortedGears.slice(0, 5);
+
+    // Create a Set to store unique gears
+    const uniqueGearsSet = new Set();
+
+    // Store the first 5 popular unique gears
+    const top5UniqueGears = data.filter((item) => {
+      const gearName = item.fishing_gears?.fishing_gear_name;
+      if (gearName && top5Gears.includes(gearName) && !uniqueGearsSet.has(gearName)) {
+        uniqueGearsSet.add(gearName);
+        return true;
+      }
+      return false;
+    });
+
+    // Add the remaining unique gears that are not in the top 5
+    const remainingUniqueGears = data.filter((item) => {
+      const gearName = item.fishing_gears?.fishing_gear_name;
+      if (gearName && !uniqueGearsSet.has(gearName)) {
+        uniqueGearsSet.add(gearName);
+        return true;
+      }
+      return false;
+    });
+
+    // Return top 5 first, followed by the remaining unique gears
+    return [...top5UniqueGears, ...remainingUniqueGears];
+  };
+
   return (
     <div>
       <h1 className="fish-name">
         {fishData.fishBaseData?.name || fishData.fish3aData?.name}
       </h1>
-
+  
       {fishData && (
         <div className="fish-info">
           {fishData.fishBaseData?.photos &&
             fishData.fishBaseData.photos.length > 0 && (
               <div className="fish-photos">
-                {/* Wrap the photo map inside the Slider component */}
                 <Slider {...settings}>
                   {fishData.fishBaseData.photos.map((photo, index) => (
                     <div key={index}>
@@ -161,93 +210,65 @@ const FishDetails = () => {
                 </Slider>
               </div>
             )}
-
+  
           {fishData.fishBaseData && (
             <div className="info_container">
               <div className="first_tags">
                 <Tag info={fishData.fishBaseData} type="max_age" />
-
-                <Tag info={fishData.fishBaseData} type="max_depth"/>
-
-                <Tag info={fishData.fishBaseData} type="max_length"/>
+                <Tag info={fishData.fishBaseData} type="max_depth" />
+                <Tag info={fishData.fishBaseData} type="max_length" />
               </div>
-
-                <div className="second_tags">
-                <Tag info={fishData.fishBaseData} type="max_weight"/>
-
-                <Tag info={fishData.fishBaseData} type="average_length"/>
-
-                <Tag info={fishData.fishBaseData} type="status"/>
+  
+              <div className="second_tags">
+                <Tag info={fishData.fishBaseData} type="max_weight" />
+                <Tag info={fishData.fishBaseData} type="average_length" />
+                <Tag info={fishData.fishBaseData} type="status" />
               </div>
-
+  
+              {/* text_container where the table will be added */}
               <div className="text_container">
-                <Text info={fishData.fishBaseData} type="environment"/>
-                <Text info={fishData.fishBaseData} type="biology"/>
-                <Text info={fishData.fishBaseData} type="distribution"/>
-                <Text info={fishData.fishBaseData} type="climate"/>
-                <Text info={fishData.fishBaseData} type="threat"/>
+                <Text info={fishData.fishBaseData} type="environment" />
+                <Text info={fishData.fishBaseData} type="biology" />
+                <Text info={fishData.fishBaseData} type="distribution" />
+                <Text info={fishData.fishBaseData} type="climate" />
+                <Text info={fishData.fishBaseData} type="threat" />
+  
+                {fishData.fish3aData && fishData.fish3aData.length > 0 && (
+                  <div className="gears">
+                    <table className="fishing-gear-table">
+                      <thead>
+                        <tr>
+                          <th>Flag State</th>
+                          <th>Fishing Gear</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {getUniqueAndOrderedFishingGears(fishData.fish3aData)
+                          .slice(0, showMore ? undefined : 5) // Limit to 5 if showMore is false
+                          .map((item, index) => (
+                            <tr key={index}>
+                              <td>{item.flag_states?.flag_state_name || "N/A"}</td>
+                              <td>{item.fishing_gears?.fishing_gear_name || "N/A"}</td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                    {/* Show More/Show Less button */}
+                    {fishData.fish3aData.length > 5 && (
+                      <button
+                        className="show-more-btn"
+                        onClick={() => setShowMore(!showMore)}
+                      >
+                        {showMore ? "Show Less" : "Show More"}
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
-                {/* <p className="environment">
-                  <strong>Environment: </strong>
-                  {fishData.fishBaseData.environment
-                    ? fishData.fishBaseData.environment.join(", ")
-                    : "N/A"}
-                </p> */}
-              {/* <p className="distribution">
-                <strong>Distribution:</strong>
-                {fishData.fishBaseData.distribution}
-              </p> */}
+  
               <p className="distrbution_range">
                 <strong>Distribution Range:</strong>
                 {fishData.fishBaseData.dimensions?.distribution_range}
-              </p>
-              {/* <p className="climate">
-                <strong>Climate Zone:</strong>
-                {fishData.fishBaseData.climate_zone}
-              </p> */}
-              {/* <p className="age">
-                <strong>Max Age:</strong>
-                {fishData.fishBaseData.dimensions?.max_age} years
-              </p> */}
-              {/* <p className="depth">
-                <strong>Max Depth:</strong>
-                {fishData.fishBaseData.dimensions?.max_depth} m
-              </p> */}
-              {/* <p className="length">
-                <strong>Max Length:</strong>
-                {fishData.fishBaseData.dimensions?.max_length} cm
-              </p> */}
-              {/* <p className="weight">
-                <strong>Max Weight:</strong>
-                {fishData.fishBaseData.dimensions?.max_weight} kg
-              </p> */}
-              {/* <p className="av_length">
-                <strong>Average Length:</strong>
-                {fishData.fishBaseData.dimensions?.average_length} cm
-              </p> */}
-              {/* <p className="status">
-                <strong>IUCN Status:</strong>
-                {fishData.fishBaseData.iucn_status}
-              </p> */}
-              {/* <p className="biology">
-                <strong>Biology:</strong> {fishData.fishBaseData.biology}
-              </p> */}
-              {/* <p className="threat">
-                <strong>Threat to Humans:</strong>
-                {fishData.fishBaseData.threat_to_humans}
-              </p> */}
-            </div>
-          )}
-
-          {fishData.fish3aData?.[0] && (
-            <div>
-              <p>
-                <strong>Flag State:</strong>{" "}
-                {fishData.fish3aData[0].flag_states.flag_state_name}
-              </p>
-              <p>
-                <strong>Fishing Gear:</strong>{" "}
-                {fishData.fish3aData[0].fishing_gears.fishing_gear_name}
               </p>
             </div>
           )}
@@ -258,6 +279,7 @@ const FishDetails = () => {
 };
 
 export default FishDetails;
+
 
 
 

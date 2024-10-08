@@ -73,9 +73,37 @@
     padding-block-end: 40px;
     border-radius: 5px;
     background-color: rgba(166, 187, 222, 0.296);
+
+    .gears{
+      width: 40%;
+      margin-left: 70px;
+    }
+    .fishing-gear-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 60px;
+    }
+    
+    .fishing-gear-table th, .fishing-gear-table td {
+      border: 1px solid #000000;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    .fishing-gear-table th {
+      background-color: #f2f2f271;
+    }
+
+    .show-more-btn{
+      color:rgb(0, 0, 0) ;
+      background-color: rgba(255, 255, 255, 0.281);
+      width: 100px;
+      height: 30px;
+      margin-top: 8px;
+      margin-right: 500px;
+    }
   }
   
 }
 
 
-  
