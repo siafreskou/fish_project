@@ -29,7 +29,7 @@ function Map() {
       {error && <p>Error: {error}</p>}
       
       {position ? (
-        <div>
+        <div  style={{ marginTop: '100px' }}> 
           <p>Your Latitude: {position[0]}</p>
           <p>Your Longitude: {position[1]}</p>
 

@@ -53,7 +53,7 @@ const FishDetails = () => {
     );
   };
 
-  // Settings for react-slick carousel
+  //carousel
   const settings = {
     dots: true,
     infinite: true,
@@ -225,11 +225,11 @@ const FishDetails = () => {
                 <Tag info={fishData.fishBaseData} type="status" />
               </div>
   
-              {/* text_container where the table will be added */}
               <div className="text_container">
                 <Text info={fishData.fishBaseData} type="environment" />
                 <Text info={fishData.fishBaseData} type="biology" />
                 <Text info={fishData.fishBaseData} type="distribution" />
+                <Text info={fishData.fishBaseData} type="distribution_rng" />
                 <Text info={fishData.fishBaseData} type="climate" />
                 <Text info={fishData.fishBaseData} type="threat" />
   
@@ -265,11 +265,6 @@ const FishDetails = () => {
                   </div>
                 )}
               </div>
-  
-              <p className="distrbution_range">
-                <strong>Distribution Range:</strong>
-                {fishData.fishBaseData.dimensions?.distribution_range}
-              </p>
             </div>
           )}
         </div>

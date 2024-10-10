@@ -1,19 +1,13 @@
 import "../App.css";
 import Map from "./Maps";
 import Searchbar from "./SearchBar";
+import "./MainPage.css";
 
 const MainPage = () => {
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          width: "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-around",
-          marginTop: "1rem",
-        }}
+      <div className="fix_main"
+        
       >
         <div className="search">
           <Searchbar />

@@ -17,6 +17,9 @@ const Text = ({ info, type }) => {
     else if(type==="threat"){
         return "Threat to humans:";
     }
+    else if(type==="distribution_rng"){
+      return "Distribution range:";
+  }
   };
 
   const content = (type) => {
@@ -35,6 +38,9 @@ const Text = ({ info, type }) => {
     else if(type==="threat"){
         return info.threat_to_humans;
     }
+    else if(type==="distribution_rng"){
+      return info.dimensions?.distribution_range;
+  }
   };
 
  

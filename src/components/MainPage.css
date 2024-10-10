@@ -1,0 +1,16 @@
+.fix_main {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    /* justify-content: space-around; */
+    margin-top: 1rem;
+    justify-content: space-between;
+}
+
+.findfisher{
+    margin-right: 150px;
+}
+.findfisher2{
+    margin-right: 150px;
+}
