@@ -48,6 +48,7 @@ const Searchbar = () => {
 
   // Function to call API for the selected fish
   const fetchFishData = (fish) => {
+    setFilteredFishes([]);
     setLoading(true);
     axios
       .get(
@@ -107,42 +108,58 @@ const Searchbar = () => {
     }
   };
 
-  // Function to handle fish suggestion click
   const handleFishClick = (fish) => {
+    setSearchTerm(fish); // Set the search input to the clicked fish
+    setFilteredFishes([]); // Close suggestions
     fetchFishData(fish); // Call the API
   };
 
-  // Call API when pressing Enter
+  // Handle search when pressing Enter
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      const searchValue = searchTerm ? searchTerm.trim() : "";
+      executeSearch();
+    }
+  };
 
-      const exactMatch = fishList.find(
-        (fish) =>
-          typeof fish === "string" &&
-          fish.toLowerCase() === searchValue.toLowerCase()
-      );
+  // Handle search when clicking the Search button
+  const handleSearchClick = () => {
+    executeSearch();
+  };
 
-      if (exactMatch) {
-        fetchFishData(exactMatch);
-      }
+  // Function to execute search logic
+  const executeSearch = () => {
+    const searchValue = searchTerm ? searchTerm.trim() : "";
+
+    const exactMatch = fishList.find(
+      (fish) =>
+        typeof fish === "string" &&
+        fish.toLowerCase() === searchValue.toLowerCase()
+    );
+
+    if (exactMatch) {
+      fetchFishData(exactMatch);
     }
   };
 
   return (
     <div className="search-container" ref={searchBarRef}>
-      <div className="input-container">
-        <FaSearch className="search-icon" />
-        <input
-          className="input-field"
-          placeholder="Type to search..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-          onKeyDown={handleKeyDown}
-        />
+      <div className="search_withButton">
+        <div className="input-container">
+          <FaSearch className="search-icon" />
+          <input
+            className="input-field"
+            placeholder="Type to search..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+        <div className="button_search">
+          <button className="search-button" onClick={handleSearchClick} disabled={loading}>
+            {loading ? <div className="loader"></div> : "Search"}
+          </button>
+        </div>
       </div>
-
-      {loading && <div className="loader"></div>}
       {filteredFishes.length > 0 && (
         <div className="suggestions-list">
           {filteredFishes.map((fish, index) => (
@@ -161,7 +178,5 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
-
-
 
 
