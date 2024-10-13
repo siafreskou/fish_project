@@ -151,7 +151,7 @@ const FishDetails = () => {
       }
     });
 
-    // Sort the gears by frequency (most popular first)
+    //(most popular first)
     const sortedGears = Object.keys(gearCount).sort(
       (a, b) => gearCount[b] - gearCount[a]
     );

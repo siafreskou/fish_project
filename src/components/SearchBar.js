@@ -50,11 +50,14 @@ const Searchbar = () => {
   const fetchFishData = (fish) => {
     setLoading(true);
     axios
-      .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .get(
+        `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((response) => {
         const fishData = response.data.result[0];
         const fishbaseId = fishData?.fishbase_id;
@@ -86,11 +89,13 @@ const Searchbar = () => {
       });
   };
 
+  // Filter fish suggestions when typing
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
 
-    if (value.length > 0) {
+    // Only filter and show suggestions if input is at least 3 characters long
+    if (value.length >= 3) {
       const filtered = fishList.filter(
         (fish) =>
           typeof fish === "string" &&
@@ -98,11 +103,11 @@ const Searchbar = () => {
       );
       setFilteredFishes(filtered);
     } else {
-      setFilteredFishes([]);
+      setFilteredFishes([]); // Clear suggestions if less than 3 characters
     }
   };
 
-  // Call API when a fish suggestion is clicked
+  // Function to handle fish suggestion click
   const handleFishClick = (fish) => {
     fetchFishData(fish); // Call the API
   };
@@ -120,7 +125,6 @@ const Searchbar = () => {
 
       if (exactMatch) {
         fetchFishData(exactMatch);
-      } else if (filteredFishes.length > 0) {
       }
     }
   };
@@ -157,6 +161,7 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
+
 
 
 
