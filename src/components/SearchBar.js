@@ -13,6 +13,7 @@ const Searchbar = () => {
   const searchBarRef = useRef();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [noFishFound, setNoFishFound] = useState(false);
 
   // Fetch CSV data
   useEffect(() => {
@@ -46,10 +47,12 @@ const Searchbar = () => {
     };
   }, [searchBarRef]);
 
-  // Function to call API for the selected fish
+ 
   const fetchFishData = (fish) => {
     setFilteredFishes([]);
     setLoading(true);
+    setNoFishFound(false);
+  
     axios
       .get(
         `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`,
@@ -60,27 +63,35 @@ const Searchbar = () => {
         }
       )
       .then((response) => {
-        const fishData = response.data.result[0];
-        const fishbaseId = fishData?.fishbase_id;
-        const fish3aCODE = fishData?._3a_code;
-        const fishgbif_id = fishData?.gbif_id;
-
-        const hasFish = fishbaseId && fish3aCODE && fishgbif_id;
-
-        console.log(
-          "API Response:",
-          response.data,
-          "FishBase ID:",
-          fishbaseId,
-          "3aCODE:",
-          fish3aCODE,
-          "gbif_id",
-          fishgbif_id
-        );
-        hasFish &&
+        const fishData = response.data.result;
+  
+        // Check if there's a fish with fishbase_id
+        const fishWithFishBaseId = fishData.find(fish => fish.fishbase_id);
+  
+        if (fishWithFishBaseId) {
+          const fishbaseId = fishWithFishBaseId.fishbase_id;
+          const fish3aCODE = fishWithFishBaseId._3a_code;
+          const fishgbif_id = fishWithFishBaseId.gbif_id;
+  
+          console.log(
+            "API Response:",
+            fishWithFishBaseId,
+            "FishBase ID:",
+            fishbaseId,
+            "3aCODE:",
+            fish3aCODE,
+            "GBIF ID:",
+            fishgbif_id
+          );
+  
+          // Navigate to fish details page only if fishbase_id exists
           navigate(`/fish/${fish}`, {
             state: { fishbaseId, fish3aCODE, fishgbif_id },
           });
+        } else {
+          console.error("No fish found with a FishBase ID");
+          setNoFishFound(true);
+        }
       })
       .catch((error) => {
         console.error("Error fetching fish data:", error);
@@ -89,6 +100,7 @@ const Searchbar = () => {
         setLoading(false); // Stop loader when the API call ends
       });
   };
+  
 
   // Filter fish suggestions when typing
   const handleSearchChange = (e) => {
@@ -160,6 +172,7 @@ const Searchbar = () => {
           </button>
         </div>
       </div>
+
       {filteredFishes.length > 0 && (
         <div className="suggestions-list">
           {filteredFishes.map((fish, index) => (
@@ -171,6 +184,12 @@ const Searchbar = () => {
               {fish}
             </li>
           ))}
+        </div>
+      )}
+
+      {noFishFound && (
+        <div className="no-fish-message">
+          No fish found with the name "{searchTerm}"
         </div>
       )}
     </div>

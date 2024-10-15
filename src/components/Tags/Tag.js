@@ -25,22 +25,22 @@ const Tag = ({ info, type }) => {
 
   const content = (type) => {
     if (type === "max_age") {
-      return info.dimensions.max_age;
+      return info.dimensions.max_age|| "-";
     }
     else if(type==="max_depth"){
-      return info.dimensions.max_depth;
+      return info.dimensions.max_depth|| "-";
     }
     else if(type==="max_length"){
-      return info.dimensions.max_length;
+      return info.dimensions.max_length|| "-";
     }
     else if(type==="max_weight"){
       return info.dimensions.max_weight|| "-";
     }
     else if(type==="average_length"){
-      return info.dimensions.average_length;
+      return info.dimensions.average_length|| "-";
     }
     else if(type==="status"){
-      return info.iucn_status;
+      return info.iucn_status|| "-";
     }
   };
 
