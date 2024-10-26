@@ -2,13 +2,16 @@ import "../App.css";
 import Map from "./Maps";
 import Searchbar from "./SearchBar";
 import "./MainPage.css";
+import React, { useEffect } from 'react';
+
 
 const MainPage = () => {
+  
+ 
+
   return (
-    <div>
-      <div className="fix_main"
-        
-      >
+    <div className={`container `}>
+      <div className="fix_main">
         <div className="search">
           <Searchbar />
         </div>
@@ -29,3 +32,4 @@ const MainPage = () => {
 };
 
 export default MainPage;
+

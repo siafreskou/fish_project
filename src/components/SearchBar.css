@@ -1,8 +1,10 @@
 .search-container {
   position: relative; 
   width: 400px;
-  margin-left: 80px;
-  
+}
+
+.xl-screen{
+  width: 650px;
 }
 
 .input-container {
@@ -12,7 +14,7 @@
   border-radius: 10px;
   background-color: #ffffff;
   padding: 10px;
-  width: 800px;
+  width: 600px;
 }
 
 .search-icon {
@@ -26,6 +28,7 @@
   outline: none;
   font-size: 16px;
 }
+
 
 .suggestions-list {
   position: absolute; 

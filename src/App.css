@@ -2,6 +2,7 @@
   text-align: center;
 }
 
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -50,7 +51,7 @@
 
 body {
   background-color: #8ebbc7;
-  
+  overflow-x: hidden;
 }
 
 @keyframes App-logo-spin {

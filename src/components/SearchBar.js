@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useResponsive } from 'ahooks';
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Papa from "papaparse";
 import axios from "axios";
 import "./SearchBar.css";
 const CSV_FILE_PATH = "/GRSF_common_names.csv";
+
 
 const Searchbar = () => {
   const [fishList, setFishList] = useState([]);
@@ -14,6 +16,10 @@ const Searchbar = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [noFishFound, setNoFishFound] = useState(false);
+  const responsiveInfo = useResponsive();
+ const {xs,sm,md,lg,xl,xxl} = responsiveInfo;
+ console.log(xs,sm,md,lg,xl,xxl);
+
 
   // Fetch CSV data
   useEffect(() => {
@@ -154,12 +160,12 @@ const Searchbar = () => {
   };
 
   return (
-    <div className="search-container" ref={searchBarRef}>
+    <div className={`search-container ${xl?"xl-screen":""}`} ref={searchBarRef}>
       <div className="search_withButton">
         <div className="input-container">
           <FaSearch className="search-icon" />
           <input
-            className="input-field"
+            className={`input-field`}
             placeholder="Type to search..."
             value={searchTerm}
             onChange={handleSearchChange}

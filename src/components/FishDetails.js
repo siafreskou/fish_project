@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import "./FishDetails.css"; // Ensure your CSS file is imported
+import "./FishDetails.css"; 
 import axios from "axios";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";

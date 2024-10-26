@@ -3,14 +3,20 @@
     width: 100%;
     flex-direction: row;
     align-items: center;
-    /* justify-content: space-around; */
     margin-top: 1rem;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: wrap-reverse;
+    gap: 64px;
 }
 
-.findfisher{
-    margin-right: 150px;
+
+
+.small-screen{
+    padding: 10px;
+    .findfisher{
+        margin-right: 800px;
+    }
 }
-.findfisher2{
-    margin-right: 150px;
+.container{
+    width: 100%;
 }

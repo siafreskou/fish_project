@@ -2,6 +2,8 @@ import Navbar from "./components/NavBar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import FishDetails from "./components/FishDetails";
 import MainPage from "./components/MainPage";
+import { configResponsive } from 'ahooks';
+
 function App() {
   return (
     <div className="App">

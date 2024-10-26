@@ -6,7 +6,7 @@ const Navbar = () => {
     return (
       <nav className="navbar">
         <div className="app-name">
-          <h1>FishFinder</h1>
+          <h1>VeriFish</h1>
           <img src={fishIcon} alt="Fish Icon" className="icon" />
         </div>
       </nav>
