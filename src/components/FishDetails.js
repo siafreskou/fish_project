@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useResponsive } from 'ahooks';
 import { useLocation } from "react-router-dom";
 import "./FishDetails.css"; 
 import axios from "axios";
@@ -17,6 +18,8 @@ const FishDetails = () => {
   const [loadingFish3aData, setLoadingFish3aData] = useState(true);
   const [hasData, setHasData] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const responsiveInfo = useResponsive();
+  const {xs} = responsiveInfo;
 
   const CustomNextArrow = ({ className, style, onClick }) => {
     return (
@@ -173,7 +176,7 @@ const FishDetails = () => {
   };
 
   return (
-    <div>
+    <div className="all_info">
       <h1 className="fish-name">
         {fishData.fishBaseData?.name || fishData.fish3aData?.name}
       </h1>
@@ -182,7 +185,7 @@ const FishDetails = () => {
         <div className="fish-info">
           {fishData.fishBaseData?.photos &&
             fishData.fishBaseData.photos.length > 0 && (
-              <div className="fish-photos">
+              <div className={`fish-photos ${xs ? "fish-photos-xs" : ""}`}>      
                 <Slider {...settings}>
                   {fishData.fishBaseData.photos.map((photo, index) => (
                     <div key={index}>

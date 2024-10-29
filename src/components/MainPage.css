@@ -1,3 +1,4 @@
+
 .fix_main {
     display: flex;
     width: 100%;
@@ -9,14 +10,13 @@
     gap: 64px;
 }
 
-
-
-.small-screen{
-    padding: 10px;
-    .findfisher{
-        margin-right: 800px;
-    }
+.xl-screen-gap{
+    gap: 200px;
+    
 }
+
+
+
 .container{
     width: 100%;
 }

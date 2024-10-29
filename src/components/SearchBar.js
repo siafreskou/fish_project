@@ -17,8 +17,8 @@ const Searchbar = () => {
   const [loading, setLoading] = useState(false);
   const [noFishFound, setNoFishFound] = useState(false);
   const responsiveInfo = useResponsive();
- const {xs,sm,md,lg,xl,xxl} = responsiveInfo;
- console.log(xs,sm,md,lg,xl,xxl);
+ const {xs,sm,md,lg,xl} = responsiveInfo;
+ console.log(xs,sm,md,lg,xl);
 
 
   // Fetch CSV data

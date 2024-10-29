@@ -25,6 +25,12 @@
   height: 100px; /* Maintain aspect ratio */
 }
 
+/* .fish-photos-xs{
+  width: 500px;
+} */
+
+
+
 .slick-next {
   right: 10px; /* Adjust position of next button */
 }
@@ -133,4 +139,8 @@
   
 }
 
-
+/* .all_info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+} */

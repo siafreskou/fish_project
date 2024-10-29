@@ -1,17 +1,17 @@
 import "../App.css";
+import { useResponsive } from 'ahooks';
 import Map from "./Maps";
 import Searchbar from "./SearchBar";
 import "./MainPage.css";
-import React, { useEffect } from 'react';
 
 
 const MainPage = () => {
-  
- 
+  const responsiveInfo = useResponsive();
+  const {xl} = responsiveInfo;
 
   return (
     <div className={`container `}>
-      <div className="fix_main">
+      <div className={`fix_main ${xl ? "xl-screen-gap" : ""}`}>
         <div className="search">
           <Searchbar />
         </div>
