@@ -202,7 +202,7 @@ const FishDetails = () => {
 
           {fishData.fishBaseData && (
             <div className="info_container">
-              <div className="first_tags">
+              <div className={`first_tags ${xs ? "first-tags-xs" : ""}`}>
                 <Tag info={fishData.fishBaseData} type="max_age" />
                 <Tag info={fishData.fishBaseData} type="max_depth" />
                 <Tag info={fishData.fishBaseData} type="max_length" />

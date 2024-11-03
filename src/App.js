@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import FishDetails from "./components/FishDetails";
 import MainPage from "./components/MainPage";
 import { configResponsive } from 'ahooks';
-
+import ListPage from "./components/ListPage/ListPage"
 function App() {
   return (
     <div className="App">
@@ -13,6 +13,7 @@ function App() {
       </div>
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/results" element={<ListPage />} />
         <Route path="/fish/:fishName" element={<FishDetails />} />
       </Routes>
     </div>

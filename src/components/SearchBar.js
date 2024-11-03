@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Papa from "papaparse";
 import axios from "axios";
 import "./SearchBar.css";
-const CSV_FILE_PATH = "/GRSF_common_names.csv";
 
+const CSV_FILE_PATH = "/GRSF_common_names.csv";
 
 const Searchbar = () => {
   const [fishList, setFishList] = useState([]);
@@ -17,9 +17,8 @@ const Searchbar = () => {
   const [loading, setLoading] = useState(false);
   const [noFishFound, setNoFishFound] = useState(false);
   const responsiveInfo = useResponsive();
- const {xs,sm,md,lg,xl} = responsiveInfo;
- console.log(xs,sm,md,lg,xl);
-
+  const { xs, sm, md, lg, xl } = responsiveInfo;
+  console.log(xs, sm, md, lg, xl);
 
   // Fetch CSV data
   useEffect(() => {
@@ -40,10 +39,7 @@ const Searchbar = () => {
   // Close suggestions when clicking outside the search bar
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        searchBarRef.current &&
-        !searchBarRef.current.contains(event.target)
-      ) {
+      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
         setFilteredFishes([]);
       }
     };
@@ -53,12 +49,12 @@ const Searchbar = () => {
     };
   }, [searchBarRef]);
 
- 
+  // Fetch fish data from API
   const fetchFishData = (fish) => {
     setFilteredFishes([]);
     setLoading(true);
     setNoFishFound(false);
-  
+
     axios
       .get(
         `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`,
@@ -70,27 +66,13 @@ const Searchbar = () => {
       )
       .then((response) => {
         const fishData = response.data.result;
-  
-        // Check if there's a fish with fishbase_id
         const fishWithFishBaseId = fishData.find(fish => fish.fishbase_id);
-  
+
         if (fishWithFishBaseId) {
-          const fishbaseId = fishWithFishBaseId.fishbase_id;
-          const fish3aCODE = fishWithFishBaseId._3a_code;
-          const fishgbif_id = fishWithFishBaseId.gbif_id;
-  
-          console.log(
-            "API Response:",
-            fishWithFishBaseId,
-            "FishBase ID:",
-            fishbaseId,
-            "3aCODE:",
-            fish3aCODE,
-            "GBIF ID:",
-            fishgbif_id
-          );
-  
-          // Navigate to fish details page only if fishbase_id exists
+          const { fishbase_id: fishbaseId, _3a_code: fish3aCODE, gbif_id: fishgbif_id } = fishWithFishBaseId;
+
+          console.log("API Response:", fishWithFishBaseId);
+
           navigate(`/fish/${fish}`, {
             state: { fishbaseId, fish3aCODE, fishgbif_id },
           });
@@ -103,17 +85,15 @@ const Searchbar = () => {
         console.error("Error fetching fish data:", error);
       })
       .finally(() => {
-        setLoading(false); // Stop loader when the API call ends
+        setLoading(false);
       });
   };
-  
 
   // Filter fish suggestions when typing
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
 
-    // Only filter and show suggestions if input is at least 3 characters long
     if (value.length >= 3) {
       const filtered = fishList.filter(
         (fish) =>
@@ -122,14 +102,14 @@ const Searchbar = () => {
       );
       setFilteredFishes(filtered);
     } else {
-      setFilteredFishes([]); // Clear suggestions if less than 3 characters
+      setFilteredFishes([]);
     }
   };
 
   const handleFishClick = (fish) => {
-    setSearchTerm(fish); // Set the search input to the clicked fish
-    setFilteredFishes([]); // Close suggestions
-    fetchFishData(fish); // Call the API
+    setSearchTerm(fish);
+    setFilteredFishes([]);
+    fetchFishData(fish);
   };
 
   // Handle search when pressing Enter
@@ -148,19 +128,35 @@ const Searchbar = () => {
   const executeSearch = () => {
     const searchValue = searchTerm ? searchTerm.trim() : "";
 
-    const exactMatch = fishList.find(
-      (fish) =>
-        typeof fish === "string" &&
-        fish.toLowerCase() === searchValue.toLowerCase()
-    );
+    // Check if search is a single word without spaces
+    if (searchValue && !/\s/.test(searchValue)) {
+      const broadMatches = fishList.filter((fish) =>
+        fish.toLowerCase().includes(searchValue.toLowerCase())
+      );
 
-    if (exactMatch) {
-      fetchFishData(exactMatch);
+      if (broadMatches.length > 0) {
+        navigate("/results", {
+          state: { matchingFishes: broadMatches, searchTerm: searchValue },
+        });
+      } else {
+        fetchFishData(searchValue);
+      }
+    } else {
+      // Do an exact match and call API if necessary
+      const exactMatch = fishList.find(
+        (fish) =>
+          typeof fish === "string" &&
+          fish.toLowerCase() === searchValue.toLowerCase()
+      );
+
+      if (exactMatch) {
+        fetchFishData(exactMatch);
+      }
     }
   };
 
   return (
-    <div className={`search-container ${xl?"xl-screen":""}`} ref={searchBarRef}>
+    <div className={`search-container ${xl ? "xl-screen" : ""}`} ref={searchBarRef}>
       <div className="search_withButton">
         <div className="input-container">
           <FaSearch className="search-icon" />

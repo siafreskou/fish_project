@@ -16,7 +16,8 @@
   }
 
   .app-name h1{
-    margin: -20px 0 0 0;
+    margin: -5px 0 0 0;
     position: relative;
     top: 40px; /* Move the h1 down by 10px */
+    /* margin-left: 40px; */
   }
