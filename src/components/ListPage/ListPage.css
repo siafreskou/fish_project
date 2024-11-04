@@ -27,6 +27,7 @@
   
   .fish-table  {
     background-color: #f9f9f9;
+    cursor: pointer;
   }
   
   .fish-table tr:hover {

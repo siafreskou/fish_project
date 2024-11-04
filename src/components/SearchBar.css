@@ -101,3 +101,34 @@
     transform: rotate(360deg);
   }
 }
+
+/* Position the advanced search icon */
+.advanced-search-icon {
+  font-size: 1.2em;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+/* Style for the advanced search container */
+.advanced-search-container {
+  padding: 16px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.advanced-search-fields label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.apply-advanced-button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

@@ -7,15 +7,13 @@ const ListPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { matchingFishes, searchTerm } = location.state || { matchingFishes: [], searchTerm: "" };
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const sorting=[...matchingFishes].sort((a,b) => a.localeCompare(b));
 
   const handleFishClick = (fishName) => {
     setLoading(true);
     setError(null);
-
-    // Fetch fish data from API
     axios
       .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fishName}`, {
         headers: { "Content-Type": "application/json" },
@@ -25,8 +23,6 @@ const ListPage = () => {
 
         if (fishData) {
           const { fishbase_id: fishbaseId, _3a_code: fish3aCODE, gbif_id: fishgbif_id } = fishData;
-
-          // Navigate to FishDetails page with fetched data
           navigate(`/fish/${fishName}`, {
             state: { fishbaseId, fish3aCODE, fishgbif_id },
           });
@@ -45,7 +41,7 @@ const ListPage = () => {
     <div className="results-page">
       <h2>Results for "{searchTerm}"</h2>
       {error && <p className="error-message">{error}</p>}
-      {matchingFishes.length > 0 ? (
+      {sorting.length > 0 ? (
         <table className="fish-table">
           <thead>
             <tr>
@@ -53,7 +49,7 @@ const ListPage = () => {
             </tr>
           </thead>
           <tbody>
-            {matchingFishes.map((fish, index) => (
+            {sorting.map((fish, index) => (
               <tr key={index} onClick={() => handleFishClick(fish)}>
                 <td className="clickable-fish-name">{fish}</td>
               </tr>
