@@ -24,9 +24,9 @@ const MainPage = () => {
           </div>
         </div>
       </div>
-      <div className="location">
+      {/* <div className="location">
         <Map />
-      </div>
+      </div> */}
     </div>
   );
 };

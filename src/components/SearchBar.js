@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useResponsive } from 'ahooks';
-import { FaSearch,FaSlidersH } from "react-icons/fa";
+import { FaSearch, FaSlidersH } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Papa from "papaparse";
 import axios from "axios";
 import "./SearchBar.css";
-
-
+import InputField from "./AdvancedComponents/InputField";
 
 const CSV_FILE_PATH = "/GRSF_common_names.csv";
 
@@ -22,12 +21,18 @@ const Searchbar = () => {
   const { xs, sm, md, lg, xl } = responsiveInfo;
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
-  console.log(xs, sm, md, lg, xl);
+  // Advanced search fields
+  const [country, setCountry] = useState("");
+  const [age, setAge] = useState("");
+  const [weight, setWeight] = useState("");
+  const [length, setLength] = useState("");
+  const [status, setStatus] = useState("");
+  const [gear, setGear] = useState("");
 
   const toggleAdvancedSearch = () => {
     setIsAdvancedOpen(!isAdvancedOpen);
   };
-  
+
   // Fetch CSV data
   useEffect(() => {
     Papa.parse(CSV_FILE_PATH, {
@@ -35,7 +40,6 @@ const Searchbar = () => {
       header: false,
       complete: (result) => {
         const fishNames = result.data.map((row) => row[0]);
-        console.log("CSV Data:", fishNames);
         setFishList(fishNames);
       },
       error: (error) => {
@@ -57,35 +61,40 @@ const Searchbar = () => {
     };
   }, [searchBarRef]);
 
-  // Fetch fish data from API
-  const fetchFishData = (fish) => {
+  // Fetch fish data from API with additional parameters for advanced search
+  const fetchFishData = (fish, advancedParams = {}) => {
     setFilteredFishes([]);
     setLoading(true);
     setNoFishFound(false);
 
+    // Base URL of the API
+    const baseURL = "https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_search";
+    const params = {
+      iucn_status: status || "vulnerable",  // Defaulting to "vulnerable" if no status is provided
+      common_name: fish,
+      country,
+      age,
+      weight,
+      length,
+      gear,
+      ...advancedParams,
+    };
+
+    // Remove empty parameters
+    const queryParams = Object.fromEntries(Object.entries(params).filter(([_, v]) => v));
+
     axios
-      .get(
-        `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      .get(baseURL, {
+        headers: { "Content-Type": "application/json" },
+        params: queryParams,
+      })
       .then((response) => {
         const fishData = response.data.result;
-        const fishWithFishBaseId = fishData.find(fish => fish.fishbase_id);
-
-        if (fishWithFishBaseId) {
-          const { fishbase_id: fishbaseId, _3a_code: fish3aCODE, gbif_id: fishgbif_id } = fishWithFishBaseId;
-
-          console.log("API Response:", fishWithFishBaseId);
-
-          navigate(`/fish/${fish}`, {
-            state: { fishbaseId, fish3aCODE, fishgbif_id },
+        if (fishData.length > 0) {
+          navigate("/results", {
+            state: { fishData, searchTerm: fish },
           });
         } else {
-          console.error("No fish found with a FishBase ID");
           setNoFishFound(true);
         }
       })
@@ -104,9 +113,7 @@ const Searchbar = () => {
 
     if (value.length >= 3) {
       const filtered = fishList.filter(
-        (fish) =>
-          typeof fish === "string" &&
-          fish.toLowerCase().includes(value.toLowerCase())
+        (fish) => typeof fish === "string" && fish.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredFishes(filtered);
     } else {
@@ -127,16 +134,14 @@ const Searchbar = () => {
     }
   };
 
-  // Handle search when clicking the Search button
-  const handleSearchClick = () => {
-    executeSearch();
-  };
-
   // Function to execute search logic
   const executeSearch = () => {
     const searchValue = searchTerm ? searchTerm.trim() : "";
 
-    // Check if search is a single word without spaces
+    const advancedParams = isAdvancedOpen
+      ? { country, age, weight, length, status, gear }
+      : {};  // Add advanced parameters only if advanced search is open
+
     if (searchValue && !/\s/.test(searchValue)) {
       const broadMatches = fishList.filter((fish) =>
         fish.toLowerCase().includes(searchValue.toLowerCase())
@@ -147,18 +152,15 @@ const Searchbar = () => {
           state: { matchingFishes: broadMatches, searchTerm: searchValue },
         });
       } else {
-        fetchFishData(searchValue);
+        fetchFishData(searchValue, advancedParams);
       }
     } else {
-      // Do an exact match and call API if necessary
       const exactMatch = fishList.find(
-        (fish) =>
-          typeof fish === "string" &&
-          fish.toLowerCase() === searchValue.toLowerCase()
+        (fish) => typeof fish === "string" && fish.toLowerCase() === searchValue.toLowerCase()
       );
 
       if (exactMatch) {
-        fetchFishData(exactMatch);
+        fetchFishData(exactMatch, advancedParams);
       }
     }
   };
@@ -169,7 +171,7 @@ const Searchbar = () => {
         <div className="input-container">
           <FaSearch className="search-icon" />
           <input
-            className={`input-field`}
+            className="input-field"
             placeholder="Type to search..."
             value={searchTerm}
             onChange={handleSearchChange}
@@ -182,79 +184,29 @@ const Searchbar = () => {
           />
         </div>
         <div className="button_search">
-          <button className="search-button" onClick={handleSearchClick} disabled={loading}>
+          <button className="search-button" onClick={executeSearch} disabled={loading}>
             {loading ? <div className="loader"></div> : "Search"}
           </button>
         </div>
       </div>
-  
+
       {isAdvancedOpen && (
         <div className="advanced-search-container">
           <h3>Advanced Search</h3>
           <div className="advanced-search-fields">
-            <label>
-              Age:
-              <input type="text" placeholder="Enter age..." />
-            </label>
-            <label>
-              Weight:
-              <input type="text" placeholder="Enter weight..." />
-            </label>
-            <label>
-              Length:
-              <input type="text" placeholder="Enter length..." />
-            </label>
-            <label>
-            IUCN Status:
-              <select name="status" >
-              <option value="harmless">harmless</option>
-              <option value="not_evaluated">not evaluated</option>
-              <option value="near_threatened">near threatened</option>
-              </select>
-            </label>
-            <label>
-            Fishing Gear:
-            <select name="fishingGear">
-              <option value="bottom_trawls">Bottom trawls (nei)</option>
-              <option value="single_boat_bottom_otter_trawls">Single boat bottom otter trawls</option>
-              <option value="gillnets_and_entangling_nets">Gillnets and entangling nets (nei)</option>
-              <option value="twin_bottom_otter_trawls">Twin bottom otter trawls</option>
-              <option value="longlines_nei">Longlines (nei)</option>
-              <option value="danish_seines">Danish seines</option>
-              <option value="midwater_trawls">Midwater trawls (nei)</option>
-              <option value="scottish_seines">Scottish seines</option>
-              <option value="set_gillnets_anchored">Set gillnets (anchored)</option>
-              <option value="bottom_pair_trawls">Bottom pair trawls</option>
-              <option value="trawls">Trawls</option>
-              <option value="vertical_lines">Vertical Lines</option>
-              <option value="handlines_hand_operated">Handlines hand operated</option>
-              <option value="set_longlines">Set longlines</option>
-              <option value="purse_seines">Purse seines</option>
-              <option value="seine_nets">Seine nets (nei)</option>
-              <option value="pots">Pots</option>
-              <option value="mechanized_lines">Mechanized lines</option>
-              <option value="hooks_and_lines">Hooks and lines (nei)</option>
-              <option value="drifting_longlines">Drifting longlines</option>
-              <option value="handlines_and_hand_operated_pole_and_lines">Handlines and hand-operated pole-and-lines</option>
-              <option value="trolling_lines">Trolling lines</option>
-              <option value="cast_nets">Cast nets</option>
-              <option value="gear_nei">Gear (nei)</option>
-              <option value="beach_seines">Beach seines</option>
-              <option value="drift_gillnets">Drift gillnets</option>
-              <option value="harpoons">Harpoons</option>
-              <option value="traps_nei">Traps (nei)</option>
-              <option value="buoy_gear">Buoy gear</option>
-              <option value="pole_lines_hand_operated">Pole-lines hand operated</option>
-              <option value="encircling_gillnets">Encircling gillnets</option>
-            </select>
-            </label>
+            <InputField type="country" value={country} onChange={(e) => setCountry(e.target.value)} />
+            <InputField type="age" value={age} onChange={(e) => setAge(e.target.value)} />
+            <InputField type="weight" value={weight} onChange={(e) => setWeight(e.target.value)} />
+            <InputField type="length" value={length} onChange={(e) => setLength(e.target.value)} />
+            <InputField type="status" value={status} onChange={(e) => setStatus(e.target.value)} />
+            <InputField type="gear" value={gear} onChange={(e) => setGear(e.target.value)} />
           </div>
           <button onClick={executeSearch} className="apply-advanced-button">
-            Apply Filters
+            Search
           </button>
         </div>
       )}
-  
+
       {filteredFishes.length > 0 && (
         <div className="suggestions-list">
           {filteredFishes.map((fish, index) => (
@@ -264,7 +216,7 @@ const Searchbar = () => {
           ))}
         </div>
       )}
-  
+
       {noFishFound && (
         <div className="no-fish-message">
           No fish found with the name "{searchTerm}"
@@ -272,7 +224,7 @@ const Searchbar = () => {
       )}
     </div>
   );
-}
+};
 
 export default Searchbar;
 

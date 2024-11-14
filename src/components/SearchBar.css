@@ -111,11 +111,13 @@
 
 /* Style for the advanced search container */
 .advanced-search-container {
+  display: block;
   padding: 16px;
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
   margin-top: 12px;
+  width: 525px;
 }
 
 .advanced-search-fields label {
@@ -131,4 +133,5 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 20px;
 }

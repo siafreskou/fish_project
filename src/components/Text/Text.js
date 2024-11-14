@@ -36,7 +36,7 @@ const Text = ({ info, type }) => {
         return info.climate_zone;
     }
     else if(type==="threat"){
-        return info.threat_to_humans;
+        return info.threat_to_humans || "No threat information";
     }
     else if(type==="distribution_rng"){
       return info.dimensions?.distribution_range;
