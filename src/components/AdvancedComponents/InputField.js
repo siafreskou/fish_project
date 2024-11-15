@@ -6,7 +6,9 @@ const InputField = ({ type, value, onChange }) => {
       if (type === "weight") return "Weight";
       if (type === "length") return "Length";
       if (type === "status") return "IUCN Status";
-      if (type === "gear") return "Fishing Gear";
+      if (type === "depth") return "Minimum Depth";
+      if (type === "depth2") return "Maximum Depth";
+      if (type === "threat_to_humans") return "Threat To Humans";
       return "";
     };
   
@@ -22,7 +24,7 @@ const InputField = ({ type, value, onChange }) => {
           </select>
         );
       }
-      if (type === "age" || type === "weight" || type === "length") {
+      if (type === "age" || type === "weight" || type === "length" || type === "depth"|| type === "depth2" ) {
         return (
           <input
             type="text"
@@ -40,19 +42,21 @@ const InputField = ({ type, value, onChange }) => {
             <option value="not_evaluated">Not evaluated</option>
             <option value="near_threatened">Near threatened</option>
             <option value="vulnerable">Vulnerable</option>
+            <option value="least concern">least concern</option>
           </select>
         );
       }
-      if (type === "gear") {
+
+      if (type === "threat_to_humans") {
         return (
-          <select name="fishingGear" value={value} onChange={onChange}>
+          <select name="threat_to_humans" value={value} onChange={onChange}>
             <option value="">-</option>
-            <option value="bottom_trawls">Bottom trawls (nei)</option>
-            <option value="single_boat_bottom_otter_trawls">Single boat bottom otter trawls</option>
-            {/* Add all the other gear options here */}
+            <option value="harmless">Harmless</option>
+            <option value="potential pest">Potential Pest</option>
           </select>
         );
       }
+      
       return null;
     };
   
@@ -67,4 +71,4 @@ const InputField = ({ type, value, onChange }) => {
     );
   };
   
-  export default InputField;
+  export default InputField; 

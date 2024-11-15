@@ -27,7 +27,9 @@ const Searchbar = () => {
   const [weightValue, setWeightValue] = useState("");
   const [lengthValue, setLengthValue] = useState("");
   const [statusValue, setStatusValue] = useState("");
-  const [gearValue, setGearValue] = useState("");
+  const [depthValue, setDepthValue] = useState("");
+  const [depth2Value, setDepth2Value] = useState("");
+  const [threat_to_humansValue, setthreat_to_humansValue] = useState("");
 
   const toggleAdvancedSearch = () => {
     setIsAdvancedOpen(!isAdvancedOpen);
@@ -63,43 +65,102 @@ const Searchbar = () => {
   }, [searchBarRef]);
 
   // Fetch fish data from API
-  const fetchFishData = (fish) => {
-    setFilteredFishes([]);
-    setLoading(true);
-    setNoFishFound(false);
+  const fetchFishData = (fish, advancedParams) => {
+  setFilteredFishes([]);
+  setLoading(true);
+  setNoFishFound(false);
 
-    axios
-      .get(
-        `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((response) => {
-        const fishData = response.data.result;
-        const fishWithFishBaseId = fishData.find((fish) => fish.fishbase_id);
+  // Construct the query params based on the advanced search
+  const params = new URLSearchParams();
 
-        if (fishWithFishBaseId) {
-          const { fishbase_id: fishbaseId, _3a_code: fish3aCODE, gbif_id: fishgbif_id } = fishWithFishBaseId;
+  if (fish && fish.trim()) {
+    params.append("common_name", fish);
+  }
 
-          console.log("API Response:", fishWithFishBaseId);
+  if (advancedParams) {
+    if (advancedParams.country) params.append("country", advancedParams.country);
+    if (advancedParams.age) params.append("max_age", advancedParams.age);
 
-          navigate(`/fish/${fish}`, {
-            state: { fishbaseId, fish3aCODE, fishgbif_id },
-          });
-        } else {
-          console.error("No fish found with a FishBase ID");
-          setNoFishFound(true);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching fish data:", error);
-      })
-      .finally(() => {
-        setLoading(false);
+    if (advancedParams.weight) {
+      params.append("max_weight", advancedParams.weight);
+    }
+
+    if (advancedParams.length) params.append("max_length", advancedParams.length);
+    if (advancedParams.status) params.append("iucn_status", advancedParams.status);
+    if (advancedParams.depth) params.append("min_depth", advancedParams.depth);
+    if (advancedParams.depth2) params.append("max_depth", advancedParams.depth2);
+    if (advancedParams.threat_to_humans) params.append("threat_to_humans", advancedParams.threat_to_humans);
+  }
+
+  // Perform the API request
+  axios
+  .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_search?${params.toString()}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then((response) => {
+    // Ensure that response.data.result is not undefined or null and is an array
+    const fishData = Array.isArray(response.data.result) ? response.data.result : [];
+    
+    // Extract fish names safely
+    const fishNames = fishData.map((fish) => fish.name); 
+
+    if (fishNames.length > 0) {
+      // Navigate to results page with fish names
+      navigate("/ListFishes", {
+        state: { fishNames },
       });
+    } else {
+      console.error("No fish found.");
+      setNoFishFound(true);
+    }
+  })
+  .catch((error) => {
+    console.error("Error fetching fish data:", error);
+  })
+  .finally(() => {
+    setLoading(false);
+  });
+};
+  
+  
+  const executeSearch = () => {
+    const searchValue = searchTerm ? searchTerm.trim() : "";
+    
+    // Construct the advanced search parameters
+    const advancedParams = {
+      country: countryValue,
+      age: ageValue,
+      weight: weightValue,
+      length: lengthValue,
+      status: statusValue,
+      depth: depthValue,
+      depth2: depth2Value,
+      threat_to_humans: threat_to_humansValue,
+    };
+  
+    // Check if we have either a search term or advanced parameters set
+    if (searchValue && !/\s/.test(searchValue)) {
+      const broadMatches = fishList.filter((fish) =>
+        fish.toLowerCase().includes(searchValue.toLowerCase())
+      );
+  
+      if (broadMatches.length > 0) {
+        navigate("/results", {
+          state: { matchingFishes: broadMatches, searchTerm: searchValue },
+        });
+      } else {
+        // Use the advanced search parameters when calling the API
+        fetchFishData(searchValue, advancedParams);
+      }
+    } else if (Object.values(advancedParams).some(value => value)) {
+      // If no search term but there are advanced parameters, trigger the API call
+      fetchFishData(searchTerm, advancedParams);
+    } else {
+      // If there's no search term and no advanced parameters, do nothing or handle appropriately
+      console.log("No search term or advanced parameters provided.");
+    }
   };
 
   // Filter fish suggestions when typing
@@ -137,34 +198,7 @@ const Searchbar = () => {
     executeSearch();
   };
 
-  // Function to execute search logic
-  const executeSearch = () => {
-    const searchValue = searchTerm ? searchTerm.trim() : "";
-
-    if (searchValue && !/\s/.test(searchValue)) {
-      const broadMatches = fishList.filter((fish) =>
-        fish.toLowerCase().includes(searchValue.toLowerCase())
-      );
-
-      if (broadMatches.length > 0) {
-        navigate("/results", {
-          state: { matchingFishes: broadMatches, searchTerm: searchValue },
-        });
-      } else {
-        fetchFishData(searchValue);
-      }
-    } else {
-      const exactMatch = fishList.find(
-        (fish) =>
-          typeof fish === "string" &&
-          fish.toLowerCase() === searchValue.toLowerCase()
-      );
-
-      if (exactMatch) {
-        fetchFishData(exactMatch);
-      }
-    }
-  };
+ 
 
   // Handle changes for advanced search fields
   const handleInputChange = (value, type) => {
@@ -180,8 +214,14 @@ const Searchbar = () => {
       setLengthValue(value);
     } else if (type === "status") {
       setStatusValue(value);
-    } else if (type === "gear") {
-      setGearValue(value);
+    } else if (type === "depth") {
+      setDepthValue(value);
+    }
+    else if (type === "depth2") {
+      setDepth2Value(value);
+    }
+    else if (type === "threat_to_humans") {
+      setthreat_to_humansValue(value);
     }
 
     console.log({
@@ -190,7 +230,9 @@ const Searchbar = () => {
       weightValue,
       lengthValue,
       statusValue,
-      gearValue
+      depthValue,
+      depth2Value,
+      threat_to_humansValue
     });
   };
 
@@ -228,7 +270,9 @@ const Searchbar = () => {
             <InputField type="weight" value={weightValue} onChange={(e) => handleInputChange(e.target.value, "weight")} />
             <InputField type="length" value={lengthValue} onChange={(e) => handleInputChange(e.target.value, "length")} />
             <InputField type="status" value={statusValue} onChange={(e) => handleInputChange(e.target.value, "status")} />
-            <InputField type="gear" value={gearValue} onChange={(e) => handleInputChange(e.target.value, "gear")} />
+            <InputField type="depth" value={depthValue} onChange={(e) => handleInputChange(e.target.value, "depth")} />
+            <InputField type="depth2" value={depth2Value} onChange={(e) => handleInputChange(e.target.value, "depth2")} />
+            <InputField type="threat_to_humans" value={threat_to_humansValue} onChange={(e) => handleInputChange(e.target.value, "threat_to_humans")} />
           </div>
           <button onClick={executeSearch} className="apply-advanced-button">
             Search

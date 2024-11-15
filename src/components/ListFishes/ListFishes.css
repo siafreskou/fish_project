@@ -1,0 +1,49 @@
+.fish-results-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .fish-results-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    font-size: 18px;
+    cursor: pointer;
+    margin: 10px 0;
+  }
+  
+  li:hover {
+    text-decoration: underline;
+    color: #007bff;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .back-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .back-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .loading {
+    font-size: 18px;
+  }
+  
