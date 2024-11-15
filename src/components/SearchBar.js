@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useResponsive } from 'ahooks';
+import { useResponsive } from "ahooks";
 import { FaSearch, FaSlidersH } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Papa from "papaparse";
@@ -13,21 +13,21 @@ const Searchbar = () => {
   const [fishList, setFishList] = useState([]);
   const [filteredFishes, setFilteredFishes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const searchBarRef = useRef();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [noFishFound, setNoFishFound] = useState(false);
+  const searchBarRef = useRef();
+  const navigate = useNavigate();
   const responsiveInfo = useResponsive();
   const { xs, sm, md, lg, xl } = responsiveInfo;
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
-  // Advanced search fields
-  const [country, setCountry] = useState("");
-  const [age, setAge] = useState("");
-  const [weight, setWeight] = useState("");
-  const [length, setLength] = useState("");
-  const [status, setStatus] = useState("");
-  const [gear, setGear] = useState("");
+  // State variables for the advanced search fields
+  const [countryValue, setCountryValue] = useState("");
+  const [ageValue, setAgeValue] = useState("");
+  const [weightValue, setWeightValue] = useState("");
+  const [lengthValue, setLengthValue] = useState("");
+  const [statusValue, setStatusValue] = useState("");
+  const [gearValue, setGearValue] = useState("");
 
   const toggleAdvancedSearch = () => {
     setIsAdvancedOpen(!isAdvancedOpen);
@@ -40,6 +40,7 @@ const Searchbar = () => {
       header: false,
       complete: (result) => {
         const fishNames = result.data.map((row) => row[0]);
+        console.log("CSV Data:", fishNames);
         setFishList(fishNames);
       },
       error: (error) => {
@@ -61,40 +62,35 @@ const Searchbar = () => {
     };
   }, [searchBarRef]);
 
-  // Fetch fish data from API with additional parameters for advanced search
-  const fetchFishData = (fish, advancedParams = {}) => {
+  // Fetch fish data from API
+  const fetchFishData = (fish) => {
     setFilteredFishes([]);
     setLoading(true);
     setNoFishFound(false);
 
-    // Base URL of the API
-    const baseURL = "https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_search";
-    const params = {
-      iucn_status: status || "vulnerable",  // Defaulting to "vulnerable" if no status is provided
-      common_name: fish,
-      country,
-      age,
-      weight,
-      length,
-      gear,
-      ...advancedParams,
-    };
-
-    // Remove empty parameters
-    const queryParams = Object.fromEntries(Object.entries(params).filter(([_, v]) => v));
-
     axios
-      .get(baseURL, {
-        headers: { "Content-Type": "application/json" },
-        params: queryParams,
-      })
+      .get(
+        `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fish}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((response) => {
         const fishData = response.data.result;
-        if (fishData.length > 0) {
-          navigate("/results", {
-            state: { fishData, searchTerm: fish },
+        const fishWithFishBaseId = fishData.find((fish) => fish.fishbase_id);
+
+        if (fishWithFishBaseId) {
+          const { fishbase_id: fishbaseId, _3a_code: fish3aCODE, gbif_id: fishgbif_id } = fishWithFishBaseId;
+
+          console.log("API Response:", fishWithFishBaseId);
+
+          navigate(`/fish/${fish}`, {
+            state: { fishbaseId, fish3aCODE, fishgbif_id },
           });
         } else {
+          console.error("No fish found with a FishBase ID");
           setNoFishFound(true);
         }
       })
@@ -113,7 +109,9 @@ const Searchbar = () => {
 
     if (value.length >= 3) {
       const filtered = fishList.filter(
-        (fish) => typeof fish === "string" && fish.toLowerCase().includes(value.toLowerCase())
+        (fish) =>
+          typeof fish === "string" &&
+          fish.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredFishes(filtered);
     } else {
@@ -134,13 +132,14 @@ const Searchbar = () => {
     }
   };
 
+  // Handle search when clicking the Search button
+  const handleSearchClick = () => {
+    executeSearch();
+  };
+
   // Function to execute search logic
   const executeSearch = () => {
     const searchValue = searchTerm ? searchTerm.trim() : "";
-
-    const advancedParams = isAdvancedOpen
-      ? { country, age, weight, length, status, gear }
-      : {};  // Add advanced parameters only if advanced search is open
 
     if (searchValue && !/\s/.test(searchValue)) {
       const broadMatches = fishList.filter((fish) =>
@@ -152,17 +151,47 @@ const Searchbar = () => {
           state: { matchingFishes: broadMatches, searchTerm: searchValue },
         });
       } else {
-        fetchFishData(searchValue, advancedParams);
+        fetchFishData(searchValue);
       }
     } else {
       const exactMatch = fishList.find(
-        (fish) => typeof fish === "string" && fish.toLowerCase() === searchValue.toLowerCase()
+        (fish) =>
+          typeof fish === "string" &&
+          fish.toLowerCase() === searchValue.toLowerCase()
       );
 
       if (exactMatch) {
-        fetchFishData(exactMatch, advancedParams);
+        fetchFishData(exactMatch);
       }
     }
+  };
+
+  // Handle changes for advanced search fields
+  const handleInputChange = (value, type) => {
+    console.log(`${type} Value changed to:`, value);  // Console log to verify input value
+
+    if (type === "country") {
+      setCountryValue(value);
+    } else if (type === "age") {
+      setAgeValue(value);
+    } else if (type === "weight") {
+      setWeightValue(value);
+    } else if (type === "length") {
+      setLengthValue(value);
+    } else if (type === "status") {
+      setStatusValue(value);
+    } else if (type === "gear") {
+      setGearValue(value);
+    }
+
+    console.log({
+      countryValue,
+      ageValue,
+      weightValue,
+      lengthValue,
+      statusValue,
+      gearValue
+    });
   };
 
   return (
@@ -184,7 +213,7 @@ const Searchbar = () => {
           />
         </div>
         <div className="button_search">
-          <button className="search-button" onClick={executeSearch} disabled={loading}>
+          <button className="search-button" onClick={handleSearchClick} disabled={loading}>
             {loading ? <div className="loader"></div> : "Search"}
           </button>
         </div>
@@ -194,12 +223,12 @@ const Searchbar = () => {
         <div className="advanced-search-container">
           <h3>Advanced Search</h3>
           <div className="advanced-search-fields">
-            <InputField type="country" value={country} onChange={(e) => setCountry(e.target.value)} />
-            <InputField type="age" value={age} onChange={(e) => setAge(e.target.value)} />
-            <InputField type="weight" value={weight} onChange={(e) => setWeight(e.target.value)} />
-            <InputField type="length" value={length} onChange={(e) => setLength(e.target.value)} />
-            <InputField type="status" value={status} onChange={(e) => setStatus(e.target.value)} />
-            <InputField type="gear" value={gear} onChange={(e) => setGear(e.target.value)} />
+            <InputField type="country" value={countryValue} onChange={(e) => handleInputChange(e.target.value, "country")} />
+            <InputField type="age" value={ageValue} onChange={(e) => handleInputChange(e.target.value, "age")} />
+            <InputField type="weight" value={weightValue} onChange={(e) => handleInputChange(e.target.value, "weight")} />
+            <InputField type="length" value={lengthValue} onChange={(e) => handleInputChange(e.target.value, "length")} />
+            <InputField type="status" value={statusValue} onChange={(e) => handleInputChange(e.target.value, "status")} />
+            <InputField type="gear" value={gearValue} onChange={(e) => handleInputChange(e.target.value, "gear")} />
           </div>
           <button onClick={executeSearch} className="apply-advanced-button">
             Search
@@ -227,5 +256,8 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
+
+
+
 
 
