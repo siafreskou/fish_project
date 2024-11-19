@@ -1,49 +1,66 @@
 .fish-results-container {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .fish-results-container h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    font-size: 18px;
-    cursor: pointer;
-    margin: 10px 0;
-  }
-  
-  li:hover {
-    text-decoration: underline;
-    color: #007bff;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .back-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .back-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .loading {
-    font-size: 18px;
-  }
-  
+  padding: 20px;
+  text-align: center;
+}
+
+.fish-results-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.fish-results-container table {
+  width: 80%;
+  border-collapse: collapse;
+  margin: 20px auto;
+}
+
+.fish-results-container th, 
+.fish-results-container td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  background-color: #f9f9f9;
+}
+
+.fish-results-container tr:hover {
+  background-color: #f1f1f1;
+}
+
+.fish-results-container th {
+  background-color: #233288;
+  color: white;
+}
+
+.fish-results-container td {
+  cursor: pointer;
+}
+
+.fish-results-container td:hover {
+  text-decoration: underline;
+  color: #007bff;
+}
+
+.fish-results-container .error-message {
+  color: red;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.fish-results-container .back-button {
+  background-color: #233288;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.fish-results-container .back-button:hover {
+  background-color: #1a245a;
+}
+
+.fish-results-container .loading {
+  font-size: 18px;
+}
+

@@ -13,7 +13,7 @@
     width: 80%;
   }
   
-  .fish-table th, .fish-table td {
+  .fish-table th, .fish-table td {  
     border: 1px solid #ddd;
     padding: 12px;
     text-align: left;

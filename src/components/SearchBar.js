@@ -18,7 +18,7 @@ const Searchbar = () => {
   const searchBarRef = useRef();
   const navigate = useNavigate();
   const responsiveInfo = useResponsive();
-  const { xs, sm, md, lg, xl } = responsiveInfo;
+  const {xl } = responsiveInfo;
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
   // State variables for the advanced search fields
@@ -30,7 +30,8 @@ const Searchbar = () => {
   const [depthValue, setDepthValue] = useState("");
   const [depth2Value, setDepth2Value] = useState("");
   const [threat_to_humansValue, setthreat_to_humansValue] = useState("");
-
+  const [climate_zoneValue, setclimate_zoneValue] = useState("");
+  const [environmentValue, setenvironmentValue] = useState("");
   const toggleAdvancedSearch = () => {
     setIsAdvancedOpen(!isAdvancedOpen);
   };
@@ -64,35 +65,25 @@ const Searchbar = () => {
     };
   }, [searchBarRef]);
 
-  // Fetch fish data from API
   const fetchFishData = (fish, advancedParams) => {
   setFilteredFishes([]);
   setLoading(true);
   setNoFishFound(false);
-
-  // Construct the query params based on the advanced search
   const params = new URLSearchParams();
-
-  if (fish && fish.trim()) {
-    params.append("common_name", fish);
-  }
-
+  if (fish && fish.trim()) params.append("common_name", fish);
   if (advancedParams) {
     if (advancedParams.country) params.append("country", advancedParams.country);
     if (advancedParams.age) params.append("max_age", advancedParams.age);
-
-    if (advancedParams.weight) {
-      params.append("max_weight", advancedParams.weight);
-    }
-
+    if (advancedParams.weight) params.append("max_weight", advancedParams.weight);
     if (advancedParams.length) params.append("max_length", advancedParams.length);
     if (advancedParams.status) params.append("iucn_status", advancedParams.status);
     if (advancedParams.depth) params.append("min_depth", advancedParams.depth);
     if (advancedParams.depth2) params.append("max_depth", advancedParams.depth2);
     if (advancedParams.threat_to_humans) params.append("threat_to_humans", advancedParams.threat_to_humans);
+    if (advancedParams.climate_zone) params.append("climate_zone", advancedParams.climate_zone);
+    if (advancedParams.environment) params.append("environment", advancedParams.environment);
   }
 
-  // Perform the API request
   axios
   .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_search?${params.toString()}`, {
     headers: {
@@ -100,14 +91,10 @@ const Searchbar = () => {
     },
   })
   .then((response) => {
-    // Ensure that response.data.result is not undefined or null and is an array
     const fishData = Array.isArray(response.data.result) ? response.data.result : [];
-    
-    // Extract fish names safely
     const fishNames = fishData.map((fish) => fish.name); 
 
     if (fishNames.length > 0) {
-      // Navigate to results page with fish names
       navigate("/ListFishes", {
         state: { fishNames },
       });
@@ -127,8 +114,7 @@ const Searchbar = () => {
   
   const executeSearch = () => {
     const searchValue = searchTerm ? searchTerm.trim() : "";
-    
-    // Construct the advanced search parameters
+
     const advancedParams = {
       country: countryValue,
       age: ageValue,
@@ -138,9 +124,10 @@ const Searchbar = () => {
       depth: depthValue,
       depth2: depth2Value,
       threat_to_humans: threat_to_humansValue,
+      climate_zone: climate_zoneValue,
+      environment: environmentValue
     };
-  
-    // Check if we have either a search term or advanced parameters set
+ 
     if (searchValue && !/\s/.test(searchValue)) {
       const broadMatches = fishList.filter((fish) =>
         fish.toLowerCase().includes(searchValue.toLowerCase())
@@ -151,14 +138,11 @@ const Searchbar = () => {
           state: { matchingFishes: broadMatches, searchTerm: searchValue },
         });
       } else {
-        // Use the advanced search parameters when calling the API
         fetchFishData(searchValue, advancedParams);
       }
     } else if (Object.values(advancedParams).some(value => value)) {
-      // If no search term but there are advanced parameters, trigger the API call
       fetchFishData(searchTerm, advancedParams);
     } else {
-      // If there's no search term and no advanced parameters, do nothing or handle appropriately
       console.log("No search term or advanced parameters provided.");
     }
   };
@@ -202,38 +186,42 @@ const Searchbar = () => {
 
   // Handle changes for advanced search fields
   const handleInputChange = (value, type) => {
-    console.log(`${type} Value changed to:`, value);  // Console log to verify input value
+      console.log(`${type} Value changed to:`, value);  // Console log to verify input value
 
-    if (type === "country") {
-      setCountryValue(value);
-    } else if (type === "age") {
-      setAgeValue(value);
-    } else if (type === "weight") {
-      setWeightValue(value);
-    } else if (type === "length") {
-      setLengthValue(value);
-    } else if (type === "status") {
-      setStatusValue(value);
-    } else if (type === "depth") {
-      setDepthValue(value);
-    }
-    else if (type === "depth2") {
-      setDepth2Value(value);
-    }
-    else if (type === "threat_to_humans") {
-      setthreat_to_humansValue(value);
-    }
+      if (type === "country") {
+        setCountryValue(value);
+      } else if (type === "age") {
+        setAgeValue(value);
+      } else if (type === "weight") {
+        setWeightValue(value);
+      } else if (type === "length") {
+        setLengthValue(value);
+      } else if (type === "status") {
+        setStatusValue(value);
+      } else if (type === "depth") {
+        setDepthValue(value);
+      }else if (type === "depth2") {
+        setDepth2Value(value);
+      }else if (type === "threat_to_humans") {
+        setthreat_to_humansValue(value);
+      }else if (type === "climate_zone") {
+        setclimate_zoneValue(value);
+      }else if (type === "environment") {
+        setenvironmentValue(value);
+      }
 
-    console.log({
-      countryValue,
-      ageValue,
-      weightValue,
-      lengthValue,
-      statusValue,
-      depthValue,
-      depth2Value,
-      threat_to_humansValue
-    });
+      console.log({
+        countryValue,
+        ageValue,
+        weightValue,
+        lengthValue,
+        statusValue,
+        depthValue,
+        depth2Value,
+        threat_to_humansValue,
+        climate_zoneValue,
+        environmentValue
+      });
   };
 
   return (
@@ -273,6 +261,8 @@ const Searchbar = () => {
             <InputField type="depth" value={depthValue} onChange={(e) => handleInputChange(e.target.value, "depth")} />
             <InputField type="depth2" value={depth2Value} onChange={(e) => handleInputChange(e.target.value, "depth2")} />
             <InputField type="threat_to_humans" value={threat_to_humansValue} onChange={(e) => handleInputChange(e.target.value, "threat_to_humans")} />
+            <InputField type="climate_zone" value={climate_zoneValue} onChange={(e) => handleInputChange(e.target.value, "climate_zone")} />
+            <InputField type="environment" value={environmentValue} onChange={(e) => handleInputChange(e.target.value, "environment")} />
           </div>
           <button onClick={executeSearch} className="apply-advanced-button">
             Search

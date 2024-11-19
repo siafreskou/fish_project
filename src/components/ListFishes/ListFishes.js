@@ -1,29 +1,29 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./ListFishes.css"; // Optional: You can create a custom CSS file
+import "./ListFishes.css";
 
 const ListFishes = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
-  // Extract fish names passed via the state
-  const { fishNames } = location.state || {}; 
+
+  const { fishNames } = location.state || {};
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Handle click on fish name to fetch its details
   const handleFishClick = (fishName) => {
     setLoading(true);
     setError(null);
-    
-    // Fetch detailed data based on the fish name
+
     axios
-      .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fishName}`, {
-        headers: { "Content-Type": "application/json" },
-      })
+      .get(
+        `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fishName}`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
       .then((response) => {
-        const fishData = response.data.result.find(fish => fish.fishbase_id);
+        const fishData = response.data.result.find((fish) => fish.fishbase_id);
 
         if (fishData) {
           const { fishbase_id: fishbaseId, _3a_code: fish3aCODE, gbif_id: fishgbif_id } = fishData;
@@ -44,29 +44,36 @@ const ListFishes = () => {
   return (
     <div className="fish-results-container">
       <h2>Fish Results</h2>
-      {error && <p className="error-message">{error}</p>} {/* Show error message */}
-      
+      {error && <p className="error-message">{error}</p>}
+
       {fishNames && fishNames.length > 0 ? (
-        <ul>
-          {fishNames.map((fish, index) => (
-            <li key={index} onClick={() => handleFishClick(fish)} className="clickable-fish-name">
-              {fish} {/* Display fish names as a list */}
-            </li>
-          ))}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Fish Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {fishNames.map((fish, index) => (
+              <tr key={index} onClick={() => handleFishClick(fish)}>
+                <td>{fish}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       ) : (
-        <p>No fish found.</p> // If no fish names are found
+        <p>No fish found.</p>
       )}
 
-      {/* Button to navigate back to previous page */}
       <button className="back-button" onClick={() => navigate(-1)}>
         Back to Search
       </button>
 
-      {loading && <p>Loading fish details...</p>} {/* Show loading text */}
+      {loading && <p>Loading fish details...</p>}
     </div>
   );
 };
 
 export default ListFishes;
+
 

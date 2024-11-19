@@ -1,3 +1,4 @@
+import "./InputField.css";
 const InputField = ({ type, value, onChange }) => {
     // Map type to titles
     const Title = (type) => {
@@ -9,6 +10,8 @@ const InputField = ({ type, value, onChange }) => {
       if (type === "depth") return "Minimum Depth";
       if (type === "depth2") return "Maximum Depth";
       if (type === "threat_to_humans") return "Threat To Humans";
+      if (type === "climate_zone") return "Climate Zone";
+      if (type === "environment") return "Environment";
       return "";
     };
   
@@ -53,6 +56,36 @@ const InputField = ({ type, value, onChange }) => {
             <option value="">-</option>
             <option value="harmless">Harmless</option>
             <option value="potential pest">Potential Pest</option>
+            <option value="ciguatera poisoning">ciguatera poisoning</option>
+            <option value="venomous">venomous</option>
+          </select>
+        );
+      }
+
+      if (type === "climate_zone") {
+        return (
+          <select name="climate_zone" value={value} onChange={onChange}>
+            <option value="">-</option>
+            <option value="subtropical">subtropical</option>
+            <option value="temperat">temperate</option>
+            <option value="tropical">tropical</option>
+          </select>
+        );
+      }
+
+      if (type === "environment") {
+        return (
+          <select name="environment" value={value} onChange={onChange}>
+            <option value="">-</option>
+            <option value="marine">marine</option>
+            <option value="benthopelagic">benthopelagic</option>
+            <option value="demersal">demersal</option>
+            <option value="oceanodromous">oceanodromous</option>
+            <option value="brackish">brackish</option>
+            <option value="pelagic-oceanic">pelagic-oceanic</option>
+            <option value="bathydemersal">bathydemersal</option>
+            <option value="potamodromous">potamodromous</option>
+            <option value="freshwater">freshwater</option>
           </select>
         );
       }
