@@ -143,8 +143,19 @@
   
 }
 
-/* .all_info{
+.recipes-list{
   display: flex;
   flex-direction: column;
-  align-items: center;
-} */
+  
+
+  .recipe-photo img{
+    display: flex;
+    width: 500px;
+    height: 400px;
+  }
+}
+
+.first-details{
+  display: flex;
+  gap: 100px;
+}

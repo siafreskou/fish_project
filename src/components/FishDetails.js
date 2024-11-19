@@ -20,6 +20,9 @@ const FishDetails = () => {
   const [showMore, setShowMore] = useState(false);
   const responsiveInfo = useResponsive();
   const {xs} = responsiveInfo;
+  const [showRecipes, setShowRecipes] = useState(false);
+  const [recipes, setRecipes] = useState([]);  // Store recipes here
+
 
   const CustomNextArrow = ({ className, style, onClick }) => {
     return (
@@ -129,6 +132,28 @@ const FishDetails = () => {
         setLoadingFish3aData(false);
       });
   };
+
+  const fetchFishDataFromRecipes = (fishName) => {
+    setLoadingFish3aData(true);
+    axios
+      .get(
+        `https://isl.ics.forth.gr/grsf/grsf-api/resources/get_recipes?name=${fishName}`
+      )
+      .then((response) => {
+        console.log("Recipes API response:", response.data);
+        if (response.data && response.data.result) {
+          setRecipes(response.data.result);  // Store the 'result' array in the recipes state
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching recipes:", error);
+      })
+      .finally(() => {
+        setLoadingFish3aData(false);
+      });
+  };
+  
+  
 
   useEffect(() => {
     if (fishbaseId) fetchFishDataFromFishBase();
@@ -265,9 +290,63 @@ const FishDetails = () => {
               </div>
             </div>
           )}
+          <div className="recipes">
+            <p className="quest">Want some recipe ideas with your fish search?</p>
+            <button
+              className="view-recipes-button"
+              onClick={() => {
+                if (!recipes.length) {
+                  fetchFishDataFromRecipes(fishData.fishBaseData?.name); 
+                }
+                setShowRecipes((prevState) => !prevState); 
+              }}>🍴 View Fish Recipes</button>
+
+            {showRecipes && loadingFish3aData && <p>Loading recipes...</p>}
+
+            {showRecipes && recipes.length > 0 && (
+              <div className="recipes-list">
+                <h2>Recipes for {fishData.fishBaseData?.name}</h2>
+                <ul>
+                  {recipes.map((recipe, index) => (
+                    <li key={index} className="recipe-item">
+                      <div className="first-details">
+                      <div className="recipe-photo">
+                        <img src={recipe.photo} alt={recipe.title} />
+                      </div>
+                      <div className="recipe-details">
+                        <h3>{recipe.title}</h3>
+                        <p><strong>Preparation time:</strong> {recipe.preparation_time_in_minutes} minutes</p>
+                        <p><strong>Cooking time:</strong> {recipe.cooking_time_in_minutes} minutes</p>
+                        <p><strong>Serves:</strong> {recipe.serves_persons} persons</p>
+                        <h4>Ingredients:</h4>
+                          {recipe.ingredients && recipe.ingredients.length > 0 ? (
+                            recipe.ingredients.map((ingredient, idx) => (
+                              <li key={idx}>{ingredient.quantity} of {ingredient.name}</li>
+                            ))
+                          ) : (
+                            <p>No ingredients available</p>
+                          )}
+                        </div>
+                        </div>
+                        <div className="method">
+                        <h4>Cooking Method:</h4>
+                        <p>{recipe.cooking_method}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {showRecipes && recipes.length === 0 && !loadingFish3aData && (
+              <p>No recipes available for this fish.</p>
+            )}
+
+        </div>
         </div>
       )}
     </div>
+
   );
 };
 
