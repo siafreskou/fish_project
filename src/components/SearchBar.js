@@ -264,9 +264,9 @@ const Searchbar = () => {
             <InputField type="climate_zone" value={climate_zoneValue} onChange={(e) => handleInputChange(e.target.value, "climate_zone")} />
             <InputField type="environment" value={environmentValue} onChange={(e) => handleInputChange(e.target.value, "environment")} />
           </div>
-          <button onClick={executeSearch} className="apply-advanced-button">
+          {/* <button onClick={executeSearch} className="apply-advanced-button">
             Search
-          </button>
+          </button> */}
         </div>
       )}
 

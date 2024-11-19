@@ -41,7 +41,6 @@ const InputField = ({ type, value, onChange }) => {
         return (
           <select name="status" value={value} onChange={onChange}>
             <option value="">-</option>
-            <option value="harmless">Harmless</option>
             <option value="not_evaluated">Not evaluated</option>
             <option value="near_threatened">Near threatened</option>
             <option value="vulnerable">Vulnerable</option>
@@ -54,7 +53,7 @@ const InputField = ({ type, value, onChange }) => {
         return (
           <select name="threat_to_humans" value={value} onChange={onChange}>
             <option value="">-</option>
-            <option value="harmless">Harmless</option>
+            <option value="harmlesss">harmless</option>
             <option value="potential pest">Potential Pest</option>
             <option value="ciguatera poisoning">ciguatera poisoning</option>
             <option value="venomous">venomous</option>
