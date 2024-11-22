@@ -18,11 +18,11 @@ const Searchbar = () => {
   const searchBarRef = useRef();
   const navigate = useNavigate();
   const responsiveInfo = useResponsive();
-  const {xl } = responsiveInfo;
+  const { xl } = responsiveInfo;
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
   // State variables for the advanced search fields
-  const [countryValue, setCountryValue] = useState("");
+  const [flag_state_nameValue, setFlag_state_nameValue] = useState("");
   const [ageValue, setAgeValue] = useState("");
   const [weightValue, setWeightValue] = useState("");
   const [lengthValue, setLengthValue] = useState("");
@@ -32,6 +32,7 @@ const Searchbar = () => {
   const [threat_to_humansValue, setthreat_to_humansValue] = useState("");
   const [climate_zoneValue, setclimate_zoneValue] = useState("");
   const [environmentValue, setenvironmentValue] = useState("");
+
   const toggleAdvancedSearch = () => {
     setIsAdvancedOpen(!isAdvancedOpen);
   };
@@ -66,57 +67,58 @@ const Searchbar = () => {
   }, [searchBarRef]);
 
   const fetchFishData = (fish, advancedParams) => {
-  setFilteredFishes([]);
-  setLoading(true);
-  setNoFishFound(false);
-  const params = new URLSearchParams();
-  if (fish && fish.trim()) params.append("common_name", fish);
-  if (advancedParams) {
-    if (advancedParams.country) params.append("country", advancedParams.country);
-    if (advancedParams.age) params.append("max_age", advancedParams.age);
-    if (advancedParams.weight) params.append("max_weight", advancedParams.weight);
-    if (advancedParams.length) params.append("max_length", advancedParams.length);
-    if (advancedParams.status) params.append("iucn_status", advancedParams.status);
-    if (advancedParams.depth) params.append("min_depth", advancedParams.depth);
-    if (advancedParams.depth2) params.append("max_depth", advancedParams.depth2);
-    if (advancedParams.threat_to_humans) params.append("threat_to_humans", advancedParams.threat_to_humans);
-    if (advancedParams.climate_zone) params.append("climate_zone", advancedParams.climate_zone);
-    if (advancedParams.environment) params.append("environment", advancedParams.environment);
-  }
-
-  axios
-  .get(`https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_search?${params.toString()}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  .then((response) => {
-    const fishData = Array.isArray(response.data.result) ? response.data.result : [];
-    const fishNames = fishData.map((fish) => fish.name); 
-
-    if (fishNames.length > 0) {
-      navigate("/ListFishes", {
-        state: { fishNames },
-      });
-    } else {
-      console.error("No fish found.");
-      setNoFishFound(true);
+    setFilteredFishes([]);
+    setLoading(true);
+    setNoFishFound(false);
+    const params = new URLSearchParams();
+    if (fish && fish.trim()) params.append("common_name", fish);
+    if (advancedParams) {
+      if (advancedParams.flag_state_name) params.append("flag_state_name", advancedParams.flag_state_name);
+      if (advancedParams.age) params.append("max_age", advancedParams.age);
+      if (advancedParams.weight) params.append("max_weight", advancedParams.weight);
+      if (advancedParams.length) params.append("max_length", advancedParams.length);
+      if (advancedParams.status) params.append("iucn_status", advancedParams.status);
+      if (advancedParams.depth) params.append("min_depth", advancedParams.depth);
+      if (advancedParams.depth2) params.append("max_depth", advancedParams.depth2);
+      if (advancedParams.threat_to_humans) params.append("threat_to_humans", advancedParams.threat_to_humans);
+      if (advancedParams.climate_zone) params.append("climate_zone", advancedParams.climate_zone);
+      if (advancedParams.environment) params.append("environment", advancedParams.environment);
     }
-  })
-  .catch((error) => {
-    console.error("Error fetching fish data:", error);
-  })
-  .finally(() => {
-    setLoading(false);
-  });
-};
-  
-  
+
+    axios
+      .get(
+        `https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_search?${params.toString()}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        const fishData = Array.isArray(response.data.result) ? response.data.result : [];
+        const fishNames = fishData.map((fish) => fish.name);
+        if (fishNames.length > 0) {
+          navigate("/ListFishes", {
+            state: { fishNames },
+          });
+        } else {
+          console.error("No fish found.");
+          setNoFishFound(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching fish data:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   const executeSearch = () => {
     const searchValue = searchTerm ? searchTerm.trim() : "";
 
     const advancedParams = {
-      country: countryValue,
+      flag_state_name: flag_state_nameValue,
       age: ageValue,
       weight: weightValue,
       length: lengthValue,
@@ -125,14 +127,14 @@ const Searchbar = () => {
       depth2: depth2Value,
       threat_to_humans: threat_to_humansValue,
       climate_zone: climate_zoneValue,
-      environment: environmentValue
+      environment: environmentValue,
     };
- 
+
     if (searchValue && !/\s/.test(searchValue)) {
       const broadMatches = fishList.filter((fish) =>
         fish.toLowerCase().includes(searchValue.toLowerCase())
       );
-  
+
       if (broadMatches.length > 0) {
         navigate("/results", {
           state: { matchingFishes: broadMatches, searchTerm: searchValue },
@@ -140,14 +142,13 @@ const Searchbar = () => {
       } else {
         fetchFishData(searchValue, advancedParams);
       }
-    } else if (Object.values(advancedParams).some(value => value)) {
+    } else if (Object.values(advancedParams).some((value) => value)) {
       fetchFishData(searchTerm, advancedParams);
     } else {
       console.log("No search term or advanced parameters provided.");
     }
   };
 
-  // Filter fish suggestions when typing
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -170,58 +171,53 @@ const Searchbar = () => {
     fetchFishData(fish);
   };
 
-  // Handle search when pressing Enter
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       executeSearch();
     }
   };
 
-  // Handle search when clicking the Search button
   const handleSearchClick = () => {
     executeSearch();
   };
 
- 
-
-  // Handle changes for advanced search fields
   const handleInputChange = (value, type) => {
-      console.log(`${type} Value changed to:`, value);  // Console log to verify input value
+    console.log(`${type} Value changed to:`, value);
 
-      if (type === "country") {
-        setCountryValue(value);
-      } else if (type === "age") {
-        setAgeValue(value);
-      } else if (type === "weight") {
-        setWeightValue(value);
-      } else if (type === "length") {
-        setLengthValue(value);
-      } else if (type === "status") {
-        setStatusValue(value);
-      } else if (type === "depth") {
-        setDepthValue(value);
-      }else if (type === "depth2") {
-        setDepth2Value(value);
-      }else if (type === "threat_to_humans") {
-        setthreat_to_humansValue(value);
-      }else if (type === "climate_zone") {
-        setclimate_zoneValue(value);
-      }else if (type === "environment") {
-        setenvironmentValue(value);
-      }
+    if (type === "flag_state_name") {
+      setFlag_state_nameValue(value);
+    } else if (type === "age") {
+      setAgeValue(value);
+    } else if (type === "weight") {
+      setWeightValue(value);
+    } else if (type === "length") {
+      setLengthValue(value);
+    } else if (type === "status") {
+      setStatusValue(value);
+    } else if (type === "depth") {
+      setDepthValue(value);
+    } else if (type === "depth2") {
+      setDepth2Value(value);
+    } else if (type === "threat_to_humans") {
+      setthreat_to_humansValue(value);
+    } else if (type === "climate_zone") {
+      setclimate_zoneValue(value);
+    } else if (type === "environment") {
+      setenvironmentValue(value);
+    }
 
-      console.log({
-        countryValue,
-        ageValue,
-        weightValue,
-        lengthValue,
-        statusValue,
-        depthValue,
-        depth2Value,
-        threat_to_humansValue,
-        climate_zoneValue,
-        environmentValue
-      });
+    console.log({
+      flag_state_nameValue,
+      ageValue,
+      weightValue,
+      lengthValue,
+      statusValue,
+      depthValue,
+      depth2Value,
+      threat_to_humansValue,
+      climate_zoneValue,
+      environmentValue,
+    });
   };
 
   return (
@@ -253,20 +249,60 @@ const Searchbar = () => {
         <div className="advanced-search-container">
           <h3>Advanced Search</h3>
           <div className="advanced-search-fields">
-            <InputField type="country" value={countryValue} onChange={(e) => handleInputChange(e.target.value, "country")} />
-            <InputField type="age" value={ageValue} onChange={(e) => handleInputChange(e.target.value, "age")} />
-            <InputField type="weight" value={weightValue} onChange={(e) => handleInputChange(e.target.value, "weight")} />
-            <InputField type="length" value={lengthValue} onChange={(e) => handleInputChange(e.target.value, "length")} />
-            <InputField type="status" value={statusValue} onChange={(e) => handleInputChange(e.target.value, "status")} />
-            <InputField type="depth" value={depthValue} onChange={(e) => handleInputChange(e.target.value, "depth")} />
-            <InputField type="depth2" value={depth2Value} onChange={(e) => handleInputChange(e.target.value, "depth2")} />
-            <InputField type="threat_to_humans" value={threat_to_humansValue} onChange={(e) => handleInputChange(e.target.value, "threat_to_humans")} />
-            <InputField type="climate_zone" value={climate_zoneValue} onChange={(e) => handleInputChange(e.target.value, "climate_zone")} />
-            <InputField type="environment" value={environmentValue} onChange={(e) => handleInputChange(e.target.value, "environment")} />
+            <InputField
+              type="flag_state_name"
+              value={flag_state_nameValue}
+              onChange={(e) => handleInputChange(e.target.value, "flag_state_name")}
+            />
+            <InputField
+              type="age"
+              value={ageValue}
+              onChange={(e) => handleInputChange(e.target.value, "age")}
+            />
+            <InputField
+              type="weight"
+              value={weightValue}
+              onChange={(e) => handleInputChange(e.target.value, "weight")}
+            />
+            <InputField
+              type="length"
+              value={lengthValue}
+              onChange={(e) => handleInputChange(e.target.value, "length")}
+            />
+            <InputField
+              type="status"
+              value={statusValue}
+              onChange={(e) => handleInputChange(e.target.value, "status")}
+            />
+            <InputField
+              type="depth"
+              value={depthValue}
+              onChange={(e) => handleInputChange(e.target.value, "depth")}
+            />
+            <InputField
+              type="depth2"
+              value={depth2Value}
+              onChange={(e) => handleInputChange(e.target.value, "depth2")}
+            />
+            <InputField
+              type="threat_to_humans"
+              value={threat_to_humansValue}
+              onChange={(e) => handleInputChange(e.target.value, "threat_to_humans")}
+            />
+            <InputField
+              type="climate_zone"
+              value={climate_zoneValue}
+              onChange={(e) => handleInputChange(e.target.value, "climate_zone")}
+            />
+            <InputField
+              type="environment"
+              value={environmentValue}
+              onChange={(e) => handleInputChange(e.target.value, "environment")}
+            />
           </div>
-          {/* <button onClick={executeSearch} className="apply-advanced-button">
+          <button onClick={executeSearch} className="apply-advanced-button">
             Search
-          </button> */}
+          </button>
         </div>
       )}
 
@@ -290,6 +326,8 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
+
+
 
 
 

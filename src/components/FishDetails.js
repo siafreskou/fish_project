@@ -21,7 +21,9 @@ const FishDetails = () => {
   const responsiveInfo = useResponsive();
   const {xs} = responsiveInfo;
   const [showRecipes, setShowRecipes] = useState(false);
-  const [recipes, setRecipes] = useState([]);  // Store recipes here
+  const [recipes, setRecipes] = useState([]);  
+  const [activeTab, setActiveTab] = useState("info");
+  
 
 
   const CustomNextArrow = ({ className, style, onClick }) => {
@@ -201,32 +203,47 @@ const FishDetails = () => {
   };
 
   return (
-    <div className="all_info">
-      <h1 className="fish-name">
-        {fishData.fishBaseData?.name || fishData.fish3aData?.name}
-      </h1>
+    <div className="fish-details-container">
+      {/* Tabs for navigation */}
+      <div className="tabs">
+        <button 
+          className={`tab-btn ${activeTab === 'fish' ? 'active' : ''}`} 
+          onClick={() => setActiveTab('fish')}
+        >
+          Fish Information
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'recipes' ? 'active' : ''}`} 
+          onClick={() => setActiveTab('recipes')}
+        >
+          Recipes
+        </button>
+      </div>
 
-      {fishData && (
+      {/* Conditionally render based on active tab */}
+      {activeTab === 'fish' && (
         <div className="fish-info">
-          {fishData.fishBaseData?.photos &&
-            fishData.fishBaseData.photos.length > 0 && (
-              <div className={`fish-photos ${xs ? "fish-photos-xs" : ""}`}>      
-                <Slider {...settings}>
-                  {fishData.fishBaseData.photos.map((photo, index) => (
-                    <div key={index}>
-                      <img
-                        src={photo}
-                        alt={`Fish ${index}`}
-                        style={{ width: "100%", height: "300px" }}
-                      />
-                    </div>
-                  ))}
-                </Slider>
-              </div>
-            )}
+          {/* Displaying Fish Photos */}
+          {fishData.fishBaseData?.photos && fishData.fishBaseData.photos.length > 0 && (
+            <div className={`fish-photos ${xs ? "fish-photos-xs" : ""}`}>
+              <Slider {...settings}>
+                {fishData.fishBaseData.photos.map((photo, index) => (
+                  <div key={index}>
+                    <img
+                      src={photo}
+                      alt={`Fish ${index}`}
+                      style={{ width: "100%", height: "300px" }}
+                    />
+                  </div>
+                ))}
+              </Slider>
+            </div>
+          )}
 
+          {/* Displaying Fish Information (tags and text) */}
           {fishData.fishBaseData && (
             <div className="info_container">
+              {/* Tags (Age, Depth, Length, etc.) */}
               <div className={`first_tags ${xs ? "first-tags-xs" : ""}`}>
                 <Tag info={fishData.fishBaseData} type="max_age" />
                 <Tag info={fishData.fishBaseData} type="max_depth" />
@@ -239,6 +256,7 @@ const FishDetails = () => {
                 <Tag info={fishData.fishBaseData} type="status" />
               </div>
 
+              {/* Environmental, Biological, Distribution and Threat Information */}
               <div className="text_container">
                 <Text info={fishData.fishBaseData} type="environment" />
                 <Text info={fishData.fishBaseData} type="biology" />
@@ -247,9 +265,10 @@ const FishDetails = () => {
                 <Text info={fishData.fishBaseData} type="climate" />
                 <Text info={fishData.fishBaseData} type="threat" />
 
+                {/* Fishing Gear Data */}
                 <div className="gears">
-                  {loadingFish3aData ? ( // Loader while fetching 3aCODE data
-                    <div className="loader"></div> // Show spinner
+                  {loadingFish3aData ? (
+                    <div className="loader"></div>
                   ) : (
                     <>
                       {fishData.fish3aData && fishData.fish3aData.length > 0 ? (
@@ -290,26 +309,34 @@ const FishDetails = () => {
               </div>
             </div>
           )}
-          <div className="recipes">
-            <p className="quest">Want some recipe ideas with your fish search?</p>
-            <button
-              className="view-recipes-button"
-              onClick={() => {
-                if (!recipes.length) {
-                  fetchFishDataFromRecipes(fishData.fishBaseData?.name); 
-                }
-                setShowRecipes((prevState) => !prevState); 
-              }}>🍴 View Fish Recipes</button>
+        </div>
+      )}
 
-            {showRecipes && loadingFish3aData && <p>Loading recipes...</p>}
+      {/* Recipes Tab */}
+      {activeTab === 'recipes' && (
+        <div className="recipes">
+          <p className="quest">Want some recipe ideas with your fish search?</p>
+          <button
+            className="view-recipes-button"
+            onClick={() => {
+              if (!recipes.length) {
+                fetchFishDataFromRecipes(fishData.fishBaseData?.name); 
+              }
+              setShowRecipes((prevState) => !prevState); 
+            }}
+          >
+            🍴 View Fish Recipes
+          </button>
 
-            {showRecipes && recipes.length > 0 && (
-              <div className="recipes-list">
-                <h2>Recipes for {fishData.fishBaseData?.name}</h2>
-                <ul>
-                  {recipes.map((recipe, index) => (
-                    <li key={index} className="recipe-item">
-                      <div className="first-details">
+          {showRecipes && loadingFish3aData && <p>Loading recipes...</p>}
+
+          {showRecipes && recipes.length > 0 && (
+            <div className="recipes-list">
+              <h2>Recipes for {fishData.fishBaseData?.name}</h2>
+              <ul>
+                {recipes.map((recipe, index) => (
+                  <li key={index} className="recipe-item">
+                    <div className="first-details">
                       <div className="recipe-photo">
                         <img src={recipe.photo} alt={recipe.title} />
                       </div>
@@ -319,43 +346,32 @@ const FishDetails = () => {
                         <p><strong>Cooking time:</strong> {recipe.cooking_time_in_minutes} minutes</p>
                         <p><strong>Serves:</strong> {recipe.serves_persons} persons</p>
                         <h4>Ingredients:</h4>
-                          {recipe.ingredients && recipe.ingredients.length > 0 ? (
-                            recipe.ingredients.map((ingredient, idx) => (
-                              <li key={idx}>{ingredient.quantity} of {ingredient.name}</li>
-                            ))
-                          ) : (
-                            <p>No ingredients available</p>
-                          )}
-                        </div>
-                        </div>
-                        <div className="method">
-                        <h4>Cooking Method:</h4>
-                        <p>{recipe.cooking_method}</p>
+                        {recipe.ingredients && recipe.ingredients.length > 0 ? (
+                          recipe.ingredients.map((ingredient, idx) => (
+                            <li key={idx}>{ingredient.quantity} of {ingredient.name}</li>
+                          ))
+                        ) : (
+                          <p>No ingredients available</p>
+                        )}
                       </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+                    </div>
+                    <div className="method">
+                      <h4>Cooking Method:</h4>
+                      <p>{recipe.cooking_method}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-            {showRecipes && recipes.length === 0 && !loadingFish3aData && (
-              <p>No recipes available for this fish.</p>
-            )}
-
-        </div>
+          {showRecipes && recipes.length === 0 && !loadingFish3aData && (
+            <p>No recipes available for this fish.</p>
+          )}
         </div>
       )}
     </div>
-
   );
 };
 
 export default FishDetails;
-
-
-
-
-
-
-
-

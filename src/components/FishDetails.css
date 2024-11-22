@@ -159,3 +159,30 @@
   display: flex;
   gap: 100px;
 }
+
+.tabs {
+  display: flex;
+  justify-content: center; /* Center the tabs horizontally */
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  text-transform: uppercase; /* Optional: makes tab text uppercase */
+  font-weight: bold;
+  transition: border-bottom 0.3s ease; /* Smooth transition for underline */
+}
+
+.tab-btn.active {
+  color: #007bff;
+  border-bottom: 3px solid #007bff; /* Underline the active tab */
+}
+
+.tab-btn:hover {
+  color: #007bff;
+}
