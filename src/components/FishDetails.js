@@ -204,7 +204,6 @@ const FishDetails = () => {
 
   return (
     <div className="fish-details-container">
-      {/* Tabs for navigation */}
       <div className="tabs">
         <button 
           className={`tab-btn ${activeTab === 'fish' ? 'active' : ''}`} 
@@ -333,19 +332,34 @@ const FishDetails = () => {
           {showRecipes && recipes.length > 0 && (
             <div className="recipes-list">
               <h2>Recipes for {fishData.fishBaseData?.name}</h2>
-              <ul>
+              <div>
                 {recipes.map((recipe, index) => (
-                  <li key={index} className="recipe-item">
-                    <div className="first-details">
+                  <div key={index} className="recipe-item">
+                    <h3 className="title-recipe">{recipe.title}</h3>
+                    <div className="image-table">
                       <div className="recipe-photo">
                         <img src={recipe.photo} alt={recipe.title} />
                       </div>
-                      <div className="recipe-details">
-                        <h3>{recipe.title}</h3>
-                        <p><strong>Preparation time:</strong> {recipe.preparation_time_in_minutes} minutes</p>
-                        <p><strong>Cooking time:</strong> {recipe.cooking_time_in_minutes} minutes</p>
-                        <p><strong>Serves:</strong> {recipe.serves_persons} persons</p>
-                        <h4>Ingredients:</h4>
+                      <table className="recipe-details-table">
+                          <tbody>
+                            <tr>
+                              <td><strong>Preparation Time:</strong></td>
+                              <td>{recipe.preparation_time_in_minutes} minutes</td>
+                            </tr>
+                            <tr>
+                              <td><strong>Cooking Time:</strong></td>
+                              <td>{recipe.cooking_time_in_minutes} minutes</td>
+                            </tr>
+                            <tr>
+                              <td><strong>Serves:</strong></td>
+                              <td>{recipe.serves_persons} persons</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        </div>
+                <div className="txt">
+                  <div className="ingredients">
+                    <h4>Ingredients:</h4>
                         {recipe.ingredients && recipe.ingredients.length > 0 ? (
                           recipe.ingredients.map((ingredient, idx) => (
                             <li key={idx}>{ingredient.quantity} of {ingredient.name}</li>
@@ -353,15 +367,15 @@ const FishDetails = () => {
                         ) : (
                           <p>No ingredients available</p>
                         )}
-                      </div>
-                    </div>
-                    <div className="method">
+                        </div>
+                      <div className="method">
                       <h4>Cooking Method:</h4>
                       <p>{recipe.cooking_method}</p>
-                    </div>
-                  </li>
+                      </div>
+                  </div>
+                 </div>
                 ))}
-              </ul>
+              </div>
             </div>
           )}
 
