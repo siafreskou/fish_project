@@ -22,7 +22,7 @@ const FishDetails = () => {
   const {xs} = responsiveInfo;
   const [showRecipes, setShowRecipes] = useState(false);
   const [recipes, setRecipes] = useState([]);  
-  const [activeTab, setActiveTab] = useState("info");
+  const [activeTab, setActiveTab] = useState("fish");
   
 
 
@@ -165,6 +165,12 @@ const FishDetails = () => {
     if (fish3aCODE) fetchFishDataFrom3aCODE();
   }, [fish3aCODE]);
 
+  useEffect(() => {
+    if (activeTab === "recipes" && fishData.fishBaseData?.name && recipes.length === 0) {
+      fetchFishDataFromRecipes(fishData.fishBaseData.name);
+    }
+  }, [activeTab, fishData.fishBaseData?.name, recipes.length]);
+  
   const getUniqueAndOrderedFishingGears = (data) => {
     const gearCount = {};
     data.forEach((item) => {
@@ -201,6 +207,8 @@ const FishDetails = () => {
 
     return [...top5UniqueGears, ...remainingUniqueGears];
   };
+
+  
 
   return (
     <div className="fish-details-container">
@@ -257,6 +265,7 @@ const FishDetails = () => {
 
               {/* Environmental, Biological, Distribution and Threat Information */}
               <div className="text_container">
+                <Text info={fishData.fishBaseData} type="name" />
                 <Text info={fishData.fishBaseData} type="environment" />
                 <Text info={fishData.fishBaseData} type="biology" />
                 <Text info={fishData.fishBaseData} type="distribution" />
@@ -311,25 +320,14 @@ const FishDetails = () => {
         </div>
       )}
 
-      {/* Recipes Tab */}
+     {/* Recipes Tab */}
       {activeTab === 'recipes' && (
         <div className="recipes">
-          <p className="quest">Want some recipe ideas with your fish search?</p>
-          <button
-            className="view-recipes-button"
-            onClick={() => {
-              if (!recipes.length) {
-                fetchFishDataFromRecipes(fishData.fishBaseData?.name); 
-              }
-              setShowRecipes((prevState) => !prevState); 
-            }}
-          >
-            🍴 View Fish Recipes
-          </button>
+          {/* Display loading message while fetching recipes */}
+          {loadingFish3aData && <p>Loading recipes...</p>}
 
-          {showRecipes && loadingFish3aData && <p>Loading recipes...</p>}
-
-          {showRecipes && recipes.length > 0 && (
+          {/* Display recipes if available */}
+          {!loadingFish3aData && recipes.length > 0 && (
             <div className="recipes-list">
               <h2>Recipes for {fishData.fishBaseData?.name}</h2>
               <div>
@@ -341,25 +339,25 @@ const FishDetails = () => {
                         <img src={recipe.photo} alt={recipe.title} />
                       </div>
                       <table className="recipe-details-table">
-                          <tbody>
-                            <tr>
-                              <td><strong>Preparation Time:</strong></td>
-                              <td>{recipe.preparation_time_in_minutes} minutes</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Cooking Time:</strong></td>
-                              <td>{recipe.cooking_time_in_minutes} minutes</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Serves:</strong></td>
-                              <td>{recipe.serves_persons} persons</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        </div>
-                <div className="txt2">
-                  <div className="ingredients">
-                    <h4>Ingredients:</h4>
+                        <tbody>
+                          <tr>
+                            <td><strong>Preparation Time:</strong></td>
+                            <td>{recipe.preparation_time_in_minutes} minutes</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Cooking Time:</strong></td>
+                            <td>{recipe.cooking_time_in_minutes} minutes</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Serves:</strong></td>
+                            <td>{recipe.serves_persons} persons</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="txt2">
+                      <div className="ingredients">
+                        <h4>Ingredients:</h4>
                         {recipe.ingredients && recipe.ingredients.length > 0 ? (
                           recipe.ingredients.map((ingredient, idx) => (
                             <li key={idx}>{ingredient.quantity} of {ingredient.name}</li>
@@ -367,23 +365,25 @@ const FishDetails = () => {
                         ) : (
                           <p>No ingredients available</p>
                         )}
-                        </div>
-                      <div className="method">
-                      <h4>Cooking Method:</h4>
-                      <p>{recipe.cooking_method}</p>
                       </div>
+                      <div className="method">
+                        <h4>Cooking Method:</h4>
+                        <p>{recipe.cooking_method}</p>
+                      </div>
+                    </div>
                   </div>
-                 </div>
                 ))}
               </div>
             </div>
           )}
 
-          {showRecipes && recipes.length === 0 && !loadingFish3aData && (
+          {/* Message if no recipes are available */}
+          {!loadingFish3aData && recipes.length === 0 && (
             <p>No recipes available for this fish.</p>
           )}
         </div>
       )}
+
     </div>
   );
 };

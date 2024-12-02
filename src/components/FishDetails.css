@@ -256,3 +256,7 @@
 .tab-btn:hover {
   color: #007bff;
 }
+
+.recipes {
+  padding-bottom: 2rem; /* Ensures a gap at the bottom */
+}

@@ -21,6 +21,7 @@ const Tag = ({ info, type }) => {
     else if(type==="status"){
       return "IUCN Status";
     }
+    
   };
 
   const content = (type) => {
