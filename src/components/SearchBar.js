@@ -87,7 +87,7 @@ const Searchbar = () => {
 
     axios
       .get(
-        `https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_search?${params.toString()}`,
+        `https://demos.isl.ics.forth.gr/verifish/verifish-api/resources/fishbase_search?${params.toString()}`,
         {
           headers: {
             "Content-Type": "application/json",

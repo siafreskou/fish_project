@@ -91,7 +91,7 @@ const FishDetails = () => {
   const fetchFishDataFromFishBase = () => {
     axios
       .get(
-        `https://isl.ics.forth.gr/grsf/grsf-api/resources/fishbase_info?id=${fishbaseId}`
+        `https://demos.isl.ics.forth.gr/verifish/verifish-api/resources/fishbase_info?id=${fishbaseId}`
       )
       .then((response) => {
         console.log("FishBase API response:", response.data);
@@ -115,7 +115,7 @@ const FishDetails = () => {
     setLoadingFish3aData(true);
     axios
       .get(
-        `https://isl.ics.forth.gr/grsf/grsf-api/resources/getfisheriesbasic?species_code=${fish3aCODE}&pending=true`
+        `https://demos.isl.ics.forth.gr/verifish/verifish-api/resources/getfisheriesbasic?species_code=${fish3aCODE}&pending=true`
       )
       .then((response) => {
         console.log("3aCODE API response:", response.data);
@@ -139,7 +139,7 @@ const FishDetails = () => {
     setLoadingFish3aData(true);
     axios
       .get(
-        `https://isl.ics.forth.gr/grsf/grsf-api/resources/get_recipes?name=${fishName}`
+        `https://demos.isl.ics.forth.gr/verifish/verifish-api/resources/get_recipes?name=${fishName}`
       )
       .then((response) => {
         console.log("Recipes API response:", response.data);
@@ -357,7 +357,7 @@ const FishDetails = () => {
                           </tbody>
                         </table>
                         </div>
-                <div className="txt">
+                <div className="txt2">
                   <div className="ingredients">
                     <h4>Ingredients:</h4>
                         {recipe.ingredients && recipe.ingredients.length > 0 ? (
