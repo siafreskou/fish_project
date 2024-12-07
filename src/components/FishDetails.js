@@ -20,7 +20,7 @@ const FishDetails = () => {
   const [showMore, setShowMore] = useState(false);
   const responsiveInfo = useResponsive();
   const {xs} = responsiveInfo;
-  const [showRecipes, setShowRecipes] = useState(false);
+  // const [showRecipes, setShowRecipes] = useState(false);
   const [recipes, setRecipes] = useState([]);  
   const [activeTab, setActiveTab] = useState("fish");
   
@@ -225,6 +225,20 @@ const FishDetails = () => {
         >
           Recipes
         </button>
+
+        <button 
+          className={`tab-btn ${activeTab === 'grsf' ? 'active' : ''}`} 
+          onClick={() => setActiveTab('grsf')}
+        >
+          Grsf
+        </button>
+
+        <button 
+          className={`tab-btn ${activeTab === 'nutrients' ? 'active' : ''}`} 
+          onClick={() => setActiveTab('nutrients')}
+        >
+          Nutrients
+        </button>
       </div>
 
       {/* Conditionally render based on active tab */}
@@ -323,10 +337,7 @@ const FishDetails = () => {
      {/* Recipes Tab */}
       {activeTab === 'recipes' && (
         <div className="recipes">
-          {/* Display loading message while fetching recipes */}
-          {loadingFish3aData && <p>Loading recipes...</p>}
-
-          {/* Display recipes if available */}
+          {loadingFish3aData && <span class="loader2"></span>}
           {!loadingFish3aData && recipes.length > 0 && (
             <div className="recipes-list">
               <h2>Recipes for {fishData.fishBaseData?.name}</h2>
