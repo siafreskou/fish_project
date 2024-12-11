@@ -23,6 +23,7 @@ const FishDetails = () => {
   // const [showRecipes, setShowRecipes] = useState(false);
   const [recipes, setRecipes] = useState([]);  
   const [activeTab, setActiveTab] = useState("fish");
+  const [loadingGRSFData, setLoadingGRSFData] = useState(true);
   
 
 
@@ -144,7 +145,7 @@ const FishDetails = () => {
       .then((response) => {
         console.log("Recipes API response:", response.data);
         if (response.data && response.data.result) {
-          setRecipes(response.data.result);  // Store the 'result' array in the recipes state
+          setRecipes(response.data.result);  
         }
       })
       .catch((error) => {
@@ -152,6 +153,31 @@ const FishDetails = () => {
       })
       .finally(() => {
         setLoadingFish3aData(false);
+      });
+  };
+
+
+  const fetchFishDataForGRSF = () => {
+    setLoadingGRSFData(true); 
+    axios
+      .get(
+        `https://demos.isl.ics.forth.gr/verifish/verifish-api/resources/getfisheriesbasic?species_code=${fish3aCODE}`
+      )
+      .then((response) => {
+        console.log("API response for GRSF:", response.data);
+        if (response.data) {
+          setFishData((prevData) => ({
+            ...prevData,
+            GRSF: response.data,
+          }));
+          setHasData(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching fish data from GRSF:", error);
+      })
+      .finally(() => {
+        setLoadingGRSFData(false); 
       });
   };
   
@@ -168,8 +194,10 @@ const FishDetails = () => {
   useEffect(() => {
     if (activeTab === "recipes" && fishData.fishBaseData?.name && recipes.length === 0) {
       fetchFishDataFromRecipes(fishData.fishBaseData.name);
+    } else if (activeTab === "grsf" && fish3aCODE && !fishData.GRSF) {
+      fetchFishDataForGRSF(); // Trigger GRSF data fetch
     }
-  }, [activeTab, fishData.fishBaseData?.name, recipes.length]);
+  }, [activeTab, fishData.fishBaseData?.name, recipes.length, fish3aCODE, fishData.GRSF]);
   
   const getUniqueAndOrderedFishingGears = (data) => {
     const gearCount = {};
@@ -241,10 +269,10 @@ const FishDetails = () => {
         </button>
       </div>
 
-      {/* Conditionally render based on active tab */}
+
       {activeTab === 'fish' && (
         <div className="fish-info">
-          {/* Displaying Fish Photos */}
+          {/*Fish Photos */}
           {fishData.fishBaseData?.photos && fishData.fishBaseData.photos.length > 0 && (
             <div className={`fish-photos ${xs ? "fish-photos-xs" : ""}`}>
               <Slider {...settings}>
@@ -261,10 +289,8 @@ const FishDetails = () => {
             </div>
           )}
 
-          {/* Displaying Fish Information (tags and text) */}
           {fishData.fishBaseData && (
             <div className="info_container">
-              {/* Tags (Age, Depth, Length, etc.) */}
               <div className={`first_tags ${xs ? "first-tags-xs" : ""}`}>
                 <Tag info={fishData.fishBaseData} type="max_age" />
                 <Tag info={fishData.fishBaseData} type="max_depth" />
@@ -277,7 +303,6 @@ const FishDetails = () => {
                 <Tag info={fishData.fishBaseData} type="status" />
               </div>
 
-              {/* Environmental, Biological, Distribution and Threat Information */}
               <div className="text_container">
                 <Text info={fishData.fishBaseData} type="name" />
                 <Text info={fishData.fishBaseData} type="environment" />
@@ -394,6 +419,48 @@ const FishDetails = () => {
           )}
         </div>
       )}
+
+
+{activeTab === "grsf" && (
+  <div className="grsf-info">
+    {loadingGRSFData ? (
+      <div className="loader"></div>
+    ) : fishData.GRSF ? (
+      <>
+        {/* Display the semantic_title and short_name */}
+        <div className="grsf-header">
+          <h2>{fishData.GRSF.semantic_title || "No Semantic Title Available"}</h2>
+          <h3>{fishData.GRSF.short_name || "No Short Name Available"}</h3>
+        </div>
+
+        {/* GRSF Table */}
+        <table className="fishing-gear-table">
+          <thead>
+            <tr>
+              <th>Flag State</th>
+              <th>Fishing Gear</th>
+            </tr>
+          </thead>
+          <tbody>
+            {getUniqueAndOrderedFishingGears(fishData.fish3aData)
+              .slice(0, showMore ? undefined : 5)
+              .map((item, index) => (
+                <tr key={index}>
+                  <td>{item.flag_states?.flag_state_name || "N/A"}</td>
+                  <td>{item.fishing_gears?.fishing_gear_name || "N/A"}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </>
+    ) : (
+      <p>No GRSF data available.</p>
+    )}
+  </div>
+)}
+
+     
+    
 
     </div>
   );
