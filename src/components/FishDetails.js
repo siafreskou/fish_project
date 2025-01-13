@@ -195,7 +195,7 @@ const FishDetails = () => {
     if (activeTab === "recipes" && fishData.fishBaseData?.name && recipes.length === 0) {
       fetchFishDataFromRecipes(fishData.fishBaseData.name);
     } else if (activeTab === "grsf" && fish3aCODE && !fishData.GRSF) {
-      fetchFishDataForGRSF(); // Trigger GRSF data fetch
+      fetchFishDataForGRSF(); 
     }
   }, [activeTab, fishData.fishBaseData?.name, recipes.length, fish3aCODE, fishData.GRSF]);
   
@@ -425,39 +425,51 @@ const FishDetails = () => {
   <div className="grsf-info">
     {loadingGRSFData ? (
       <div className="loader"></div>
-    ) : fishData.GRSF ? (
-      <>
-        {/* Display the semantic_title and short_name */}
-        <div className="grsf-header">
-          <h2>{fishData.GRSF.semantic_title || "No Semantic Title Available"}</h2>
-          <h3>{fishData.GRSF.short_name || "No Short Name Available"}</h3>
-        </div>
-
-        {/* GRSF Table */}
-        <table className="fishing-gear-table">
+    ) : fishData.GRSF && fishData.GRSF.length > 0 ? (
+      <div className="grsf-item">
+        <table className="grsf-details-table">
           <thead>
             <tr>
-              <th>Flag State</th>
-              <th>Fishing Gear</th>
+              <th>Property</th>
+              <th>Value</th>
             </tr>
           </thead>
           <tbody>
-            {getUniqueAndOrderedFishingGears(fishData.fish3aData)
-              .slice(0, showMore ? undefined : 5)
-              .map((item, index) => (
-                <tr key={index}>
-                  <td>{item.flag_states?.flag_state_name || "N/A"}</td>
-                  <td>{item.fishing_gears?.fishing_gear_name || "N/A"}</td>
-                </tr>
-              ))}
+            {[
+              // { name: "Semantic Title", value: fishData.GRSF[0].semantic_title || "N/A" },
+              { name: "Short Name", value: fishData.GRSF[0].short_name || "N/A" },
+              { name: "Status", value: fishData.GRSF[0].status || "N/A" },
+              { name: "Species Code", value: fishData.GRSF[0].species?.species_code || "N/A" },
+              { name: "Species Name", value: fishData.GRSF[0].species?.species_name || "N/A" },
+              { name: "Semantic id", value: fishData.GRSF[0].semantic_id || "N/A" },
+              // { name: "Fishing Gear", value: fishData.GRSF[0].fishing_gears?.fishing_gear_name || "N/A" },
+              // { name: "Flag State", value: fishData.GRSF[0].flag_states?.flag_state_name || "N/A" },
+              { name: "Traceability Flag", value: fishData.GRSF[0].traceability_flag ? "true" : "false" },
+              { name: "Dissected Fishery", value: fishData.GRSF[0].dissected_fishery ? "true" : "false" },
+              { name: "SDG Flag", value: fishData.GRSF[0].sdg_flag ? "true" : "false" },
+              {
+                name: "Source URLs",
+                value: fishData.GRSF[0].source_urls?.length
+                  ? fishData.GRSF[0].source_urls.join(", ")
+                  : "N/A",
+              },
+              { name: "Traceability uuid", value: fishData.GRSF[0].traceability_unit_uuid || "N/A" },
+              { name: "UUID", value: fishData.GRSF[0].uuid || "N/A" },
+            ].map((item, i) => (
+              <tr key={i}>
+                <td>{item.name}</td>
+                <td>{item.value}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
-      </>
+      </div>
     ) : (
       <p>No GRSF data available.</p>
     )}
   </div>
 )}
+
 
      
     
