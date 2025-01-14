@@ -32,16 +32,16 @@
 
 
 .slick-next {
-  right: 10px; /* Adjust position of next button */
+  right: 10px; 
 }
 
 .slick-prev {
-  left: 10px; /* Adjust position of previous button */
+  left: 10px; 
 }
 
 .slick-next::before,
 .slick-prev::before {
-  content: ""; /* Remove the default arrow icons */
+  content: ""; 
 }
 
 .environment {
@@ -243,14 +243,14 @@
   border: none;
   border-radius: 5px;
   font-size: 16px;
-  text-transform: uppercase; /* Optional: makes tab text uppercase */
+  text-transform: uppercase; 
   font-weight: bold;
-  transition: border-bottom 0.3s ease; /* Smooth transition for underline */
+  transition: border-bottom 0.3s ease; 
 }
 
 .tab-btn.active {
   color: #007bff;
-  border-bottom: 3px solid #007bff; /* Underline the active tab */
+  border-bottom: 3px solid #007bff; 
 }
 
 .tab-btn:hover {
@@ -258,17 +258,23 @@
 }
 
 .recipes {
-  padding-bottom: 2rem; /* Ensures a gap at the bottom */
+  padding-bottom: 2rem; 
+}
+
+
+
+.grsf-info{
+  display: flex;
+  justify-content: center; 
 }
 
 
 
 .grsf-details-table {
-  width: 50%; 
   border-collapse: collapse; 
   margin: 20px 0; 
   font-family: Arial, sans-serif; 
-  font-size: 14px;
+  font-size: 20px;
 }
 
 .grsf-details-table th, 
