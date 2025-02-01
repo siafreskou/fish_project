@@ -24,6 +24,18 @@ const FishDetails = () => {
   const [recipes, setRecipes] = useState([]);  
   const [activeTab, setActiveTab] = useState("fish");
   const [loadingGRSFData, setLoadingGRSFData] = useState(true);
+
+  const GRSFComponent = ({ activeTab, loadingGRSFData, fishData }) => {
+    const [showMore, setShowMore] = useState(Array(fishData.GRSF.length).fill(false));
+  
+    const handleToggle = (index) => {
+      setShowMore((prevState) => {
+        const newState = [...prevState];
+        newState[index] = !newState[index];
+        return newState;
+      });
+    };
+  };
   
 
 
@@ -238,6 +250,10 @@ const FishDetails = () => {
 
   
 
+
+
+  
+
   return (
     <div className="fish-details-container">
       <div className="tabs">
@@ -426,49 +442,48 @@ const FishDetails = () => {
     {loadingGRSFData ? (
       <div className="loader"></div>
     ) : fishData.GRSF && fishData.GRSF.length > 0 ? (
-      <div className="grsf-item">
-        <table className="grsf-details-table">
-          <thead>
-            <tr>
-              <th>Property</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[
-              // { name: "Semantic Title", value: fishData.GRSF[0].semantic_title || "N/A" },
-              { name: "Short Name", value: fishData.GRSF[0].short_name || "N/A" },
-              { name: "Status", value: fishData.GRSF[0].status || "N/A" },
-              { name: "Species Code", value: fishData.GRSF[0].species?.species_code || "N/A" },
-              { name: "Species Name", value: fishData.GRSF[0].species?.species_name || "N/A" },
-              { name: "Semantic id", value: fishData.GRSF[0].semantic_id || "N/A" },
-              // { name: "Fishing Gear", value: fishData.GRSF[0].fishing_gears?.fishing_gear_name || "N/A" },
-              // { name: "Flag State", value: fishData.GRSF[0].flag_states?.flag_state_name || "N/A" },
-              { name: "Traceability Flag", value: fishData.GRSF[0].traceability_flag ? "true" : "false" },
-              { name: "Dissected Fishery", value: fishData.GRSF[0].dissected_fishery ? "true" : "false" },
-              { name: "SDG Flag", value: fishData.GRSF[0].sdg_flag ? "true" : "false" },
-              {
-                name: "Source URLs",
-                value: fishData.GRSF[0].source_urls?.length
-                  ? fishData.GRSF[0].source_urls.join(", ")
-                  : "N/A",
-              },
-              { name: "Traceability uuid", value: fishData.GRSF[0].traceability_unit_uuid || "N/A" },
-              { name: "UUID", value: fishData.GRSF[0].uuid || "N/A" },
-            ].map((item, i) => (
-              <tr key={i}>
-                <td>{item.name}</td>
-                <td>{item.value}</td>
+      fishData.GRSF.map((grsfItem, index) => (
+        <div key={index} className="grsf-item">
+          <h3>GRSF Entry {index + 1}</h3>
+          <table className="grsf-details-table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Value</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {[
+                { name: "Short Name", value: grsfItem.short_name || "N/A" },
+                { name: "Status", value: grsfItem.status || "N/A" },
+                { name: "Species Code", value: grsfItem.species?.species_code || "N/A" },
+                { name: "Species Name", value: grsfItem.species?.species_name || "N/A" },
+                { name: "Semantic ID", value: grsfItem.semantic_id || "N/A" },
+                { name: "Traceability Flag", value: grsfItem.traceability_flag ? "true" : "false" },
+                { name: "Dissected Fishery", value: grsfItem.dissected_fishery ? "true" : "false" },
+                { name: "SDG Flag", value: grsfItem.sdg_flag ? "true" : "false" },
+                {
+                  name: "Source URLs",
+                  value: grsfItem.source_urls?.length ? grsfItem.source_urls.join(", ") : "N/A",
+                },
+                { name: "Traceability UUID", value: grsfItem.traceability_unit_uuid || "N/A" },
+                { name: "UUID", value: grsfItem.uuid || "N/A" },
+              ].map((item, i) => (
+                <tr key={i}>
+                  <td>{item.name}</td>
+                  <td>{item.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))
     ) : (
       <p>No GRSF data available.</p>
     )}
   </div>
 )}
+
 
 
      
