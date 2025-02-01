@@ -460,10 +460,12 @@ const FishDetails = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr onClick={() => handleRowClick(index)}>
-                    <td>Short Name</td>
-                    <td>{grsfItem.short_name || "N/A"}</td>
-                  </tr>
+                <tr onClick={() => handleRowClick(index)} className="clickable-row">
+                <td>Short Name</td>
+                  <td>
+                    {grsfItem.short_name || "N/A"}{" "}
+                  </td>
+                </tr>
 
                   {/* Show the full table when the row is clicked */}
                   {openedRowIndex === index && (
