@@ -24,6 +24,8 @@ const FishDetails = () => {
   const [recipes, setRecipes] = useState([]);  
   const [activeTab, setActiveTab] = useState("fish");
   const [loadingGRSFData, setLoadingGRSFData] = useState(true);
+  const [grsfData, setGrsfData] = useState([]);
+  
 
   const GRSFComponent = ({ activeTab, loadingGRSFData, fishData }) => {
     const [showMore, setShowMore] = useState(Array(fishData.GRSF.length).fill(false));
@@ -182,6 +184,7 @@ const FishDetails = () => {
             ...prevData,
             GRSF: response.data,
           }));
+          setGrsfData(response.data);  // Ensure grsfData is updated with API response
           setHasData(true);
         }
       })
@@ -210,6 +213,8 @@ const FishDetails = () => {
       fetchFishDataForGRSF(); 
     }
   }, [activeTab, fishData.fishBaseData?.name, recipes.length, fish3aCODE, fishData.GRSF]);
+
+  
   
   const getUniqueAndOrderedFishingGears = (data) => {
     const gearCount = {};
@@ -248,7 +253,12 @@ const FishDetails = () => {
     return [...top5UniqueGears, ...remainingUniqueGears];
   };
 
+ 
+    const [openedRowIndex, setOpenedRowIndex] = useState(null);
   
+    const handleRowClick = (index) => {
+      setOpenedRowIndex((prevIndex) => (prevIndex === index ? null : index)); // Toggle row visibility
+    };
 
 
 
@@ -437,57 +447,80 @@ const FishDetails = () => {
       )}
 
 
-{activeTab === "grsf" && (
-  <div className="grsf-info">
-    {loadingGRSFData ? (
-      <div className="loader"></div>
-    ) : fishData.GRSF && fishData.GRSF.length > 0 ? (
-      fishData.GRSF.map((grsfItem, index) => (
-        <div key={index} className="grsf-item">
-          <h3>GRSF Entry {index + 1}</h3>
-          <table className="grsf-details-table">
-            <thead>
-              <tr>
-                <th>Property</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { name: "Short Name", value: grsfItem.short_name || "N/A" },
-                { name: "Status", value: grsfItem.status || "N/A" },
-                { name: "Species Code", value: grsfItem.species?.species_code || "N/A" },
-                { name: "Species Name", value: grsfItem.species?.species_name || "N/A" },
-                { name: "Semantic ID", value: grsfItem.semantic_id || "N/A" },
-                { name: "Traceability Flag", value: grsfItem.traceability_flag ? "true" : "false" },
-                { name: "Dissected Fishery", value: grsfItem.dissected_fishery ? "true" : "false" },
-                { name: "SDG Flag", value: grsfItem.sdg_flag ? "true" : "false" },
-                {
-                  name: "Source URLs",
-                  value: grsfItem.source_urls?.length ? grsfItem.source_urls.join(", ") : "N/A",
-                },
-                { name: "Traceability UUID", value: grsfItem.traceability_unit_uuid || "N/A" },
-                { name: "UUID", value: grsfItem.uuid || "N/A" },
-              ].map((item, i) => (
-                <tr key={i}>
-                  <td>{item.name}</td>
-                  <td>{item.value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))
-    ) : (
-      <p>No GRSF data available.</p>
+    {activeTab === "grsf" && (
+      <div className="grsf-info">
+        {grsfData && grsfData.length > 0 ? (
+          grsfData.map((grsfItem, index) => (
+            <div key={index} className="grsf-item">
+              <table className="grsf-details-table">
+                <thead>
+                  <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr onClick={() => handleRowClick(index)}>
+                    <td>Short Name</td>
+                    <td>{grsfItem.short_name || "N/A"}</td>
+                  </tr>
+
+                  {/* Show the full table when the row is clicked */}
+                  {openedRowIndex === index && (
+                    <>
+                      <tr>
+                        <td>Status</td>
+                        <td>{grsfItem.status || "N/A"}</td>
+                      </tr>
+                      <tr>
+                        <td>Species Code</td>
+                        <td>{grsfItem.species?.species_code || "N/A"}</td>
+                      </tr>
+                      <tr>
+                        <td>Species Name</td>
+                        <td>{grsfItem.species?.species_name || "N/A"}</td>
+                      </tr>
+                      <tr>
+                        <td>Semantic ID</td>
+                        <td>{grsfItem.semantic_id || "N/A"}</td>
+                      </tr>
+                      <tr>
+                        <td>Traceability Flag</td>
+                        <td>{grsfItem.traceability_flag ? "true" : "false"}</td>
+                      </tr>
+                      <tr>
+                        <td>Dissected Fishery</td>
+                        <td>{grsfItem.dissected_fishery ? "true" : "false"}</td>
+                      </tr>
+                      <tr>
+                        <td>SDG Flag</td>
+                        <td>{grsfItem.sdg_flag ? "true" : "false"}</td>
+                      </tr>
+                      <tr>
+                        <td>Source URLs</td>
+                        <td>{grsfItem.source_urls?.length ? grsfItem.source_urls.join(", ") : "N/A"}</td>
+                      </tr>
+                      <tr>
+                        <td>Traceability UUID</td>
+                        <td>{grsfItem.traceability_unit_uuid || "N/A"}</td>
+                      </tr>
+                      <tr>
+                        <td>UUID</td>
+                        <td>{grsfItem.uuid || "N/A"}</td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          ))
+        ) : (
+          <p>No GRSF data available.</p>
+        )}
+      </div>
     )}
-  </div>
-)}
 
 
-
-     
-    
 
     </div>
   );

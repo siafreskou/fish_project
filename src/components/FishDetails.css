@@ -289,6 +289,10 @@
   font-weight: bold; 
 }
 
+.grsf-details-table{
+  width: 1000px;
+}
+
 
 
 .grsf-details-table td {
