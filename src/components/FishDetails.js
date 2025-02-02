@@ -184,7 +184,7 @@ const FishDetails = () => {
             ...prevData,
             GRSF: response.data,
           }));
-          setGrsfData(response.data);  // Ensure grsfData is updated with API response
+          setGrsfData(response.data);  
           setHasData(true);
         }
       })
@@ -467,7 +467,6 @@ const FishDetails = () => {
                   </td>
                 </tr>
 
-                  {/* Show the full table when the row is clicked */}
                   {openedRowIndex === index && (
                     <>
                       <tr>
@@ -517,7 +516,7 @@ const FishDetails = () => {
             </div>
           ))
         ) : (
-          <p>No GRSF data available.</p>
+          <p></p>
         )}
       </div>
     )}

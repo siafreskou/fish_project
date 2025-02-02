@@ -317,14 +317,6 @@
   align-items: center;
 }
 
-/* .grsf-details-table tbody tr {
-  cursor: pointer; 
-  transition: background-color 0.3s ease; 
-}
-
-.grsf-details-table tbody tr:hover {
-  background-color: #f0f0f08c; 
-} */
 
 .clickable-row {
   font-weight: bold;
