@@ -8,6 +8,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Tag from "./Tags/Tag";
 import Text from "./Text/Text";
+import Loader from "./Loader/Loader"; 
+import placeholderImage from "./load-fish.jpg"; 
+
 
 const FishDetails = () => {
   const location = useLocation();
@@ -257,7 +260,7 @@ const FishDetails = () => {
     const [openedRowIndex, setOpenedRowIndex] = useState(null);
   
     const handleRowClick = (index) => {
-      setOpenedRowIndex((prevIndex) => (prevIndex === index ? null : index)); // Toggle row visibility
+      setOpenedRowIndex((prevIndex) => (prevIndex === index ? null : index)); 
     };
 
 
@@ -298,7 +301,7 @@ const FishDetails = () => {
 
       {activeTab === 'fish' && (
         <div className="fish-info">
-          {/*Fish Photos */}
+          
           {fishData.fishBaseData?.photos && fishData.fishBaseData.photos.length > 0 && (
             <div className={`fish-photos ${xs ? "fish-photos-xs" : ""}`}>
               <Slider {...settings}>

@@ -17,7 +17,7 @@ const ListFishes = () => {
 
     axios
       .get(
-        `https://isl.ics.forth.gr/grsf/grsf-api/resources/searchspeciesnames?common_name=${fishName}`,
+        `https://demos.isl.ics.forth.gr/verifish/verifish-api/resources/searchspeciesnames?common_name=${fishName}`,
         {
           headers: { "Content-Type": "application/json" },
         }
