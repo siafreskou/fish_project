@@ -20,8 +20,6 @@ const Searchbar = () => {
   const responsiveInfo = useResponsive();
   const { xl } = responsiveInfo;
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
-
-  // State variables for the advanced search fields
   const [flag_state_nameValue, setFlag_state_nameValue] = useState("");
   const [ageValue, setAgeValue] = useState("");
   const [weightValue, setWeightValue] = useState("");
@@ -300,9 +298,6 @@ const Searchbar = () => {
               onChange={(e) => handleInputChange(e.target.value, "environment")}
             />
           </div>
-          <button onClick={executeSearch} className="apply-advanced-button">
-            Search
-          </button>
         </div>
       )}
 

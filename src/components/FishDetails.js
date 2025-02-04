@@ -8,9 +8,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Tag from "./Tags/Tag";
 import Text from "./Text/Text";
-import Loader from "./Loader/Loader"; 
-import placeholderImage from "./load-fish.jpg"; 
-
+import Lottie from "lottie-react";
+import loadingAnimation from "./animation-fish.json";
 
 const FishDetails = () => {
   const location = useLocation();
@@ -28,7 +27,10 @@ const FishDetails = () => {
   const [activeTab, setActiveTab] = useState("fish");
   const [loadingGRSFData, setLoadingGRSFData] = useState(true);
   const [grsfData, setGrsfData] = useState([]);
-  
+  const [loadingRecipes, setLoadingRecipes] = useState(true);
+  const [loadingGrsf, setLoadingGrsf] = useState(true);
+
+ 
 
   const GRSFComponent = ({ activeTab, loadingGRSFData, fishData }) => {
     const [showMore, setShowMore] = useState(Array(fishData.GRSF.length).fill(false));
@@ -170,6 +172,7 @@ const FishDetails = () => {
       })
       .finally(() => {
         setLoadingFish3aData(false);
+        setLoadingRecipes(false);
       });
   };
 
@@ -195,7 +198,7 @@ const FishDetails = () => {
         console.error("Error fetching fish data from GRSF:", error);
       })
       .finally(() => {
-        setLoadingGRSFData(false); 
+        setLoadingGRSFData(false);
       });
   };
   
@@ -216,6 +219,8 @@ const FishDetails = () => {
       fetchFishDataForGRSF(); 
     }
   }, [activeTab, fishData.fishBaseData?.name, recipes.length, fish3aCODE, fishData.GRSF]);
+
+  
 
   
   
@@ -301,22 +306,29 @@ const FishDetails = () => {
 
       {activeTab === 'fish' && (
         <div className="fish-info">
-          
-          {fishData.fishBaseData?.photos && fishData.fishBaseData.photos.length > 0 && (
-            <div className={`fish-photos ${xs ? "fish-photos-xs" : ""}`}>
-              <Slider {...settings}>
-                {fishData.fishBaseData.photos.map((photo, index) => (
-                  <div key={index}>
-                    <img
-                      src={photo}
-                      alt={`Fish ${index}`}
-                      style={{ width: "100%", height: "300px" }}
-                    />
-                  </div>
-                ))}
-              </Slider>
+          {loading ? ( 
+            <div className="loader-container">
+              <Lottie animationData={loadingAnimation} loop={true} />
             </div>
-          )}
+          ) : (
+            <>
+              {fishData.fishBaseData?.photos && fishData.fishBaseData.photos.length > 0 && (
+                <div className={`fish-photos ${xs ? "fish-photos-xs" : ""}`}>
+                  <Slider {...settings}>
+                    {fishData.fishBaseData.photos.map((photo, index) => (
+                      <div key={index}>
+                        <img
+                          src={photo}
+                          alt={`Fish ${index}`}
+                          style={{ width: "100%", height: "300px" }}
+                        />
+                      </div>
+                    ))}
+                  </Slider>
+                </div>
+              )}
+            </>
+            )}
 
           {fishData.fishBaseData && (
             <div className="info_container">
@@ -372,7 +384,6 @@ const FishDetails = () => {
                     </>
                   )}
 
-                  {/* Show More/Show Less button */}
                   {!loadingFish3aData && fishData.fish3aData && fishData.fish3aData.length > 5 && (
                     <button
                       className="show-more-btn"
@@ -389,140 +400,158 @@ const FishDetails = () => {
       )}
 
      {/* Recipes Tab */}
-      {activeTab === 'recipes' && (
-        <div className="recipes">
-          {loadingFish3aData && <span class="loader2"></span>}
-          {!loadingFish3aData && recipes.length > 0 && (
-            <div className="recipes-list">
-              <h2>Recipes for {fishData.fishBaseData?.name}</h2>
-              <div>
-                {recipes.map((recipe, index) => (
-                  <div key={index} className="recipe-item">
-                    <h3 className="title-recipe">{recipe.title}</h3>
-                    <div className="image-table">
-                      <div className="recipe-photo">
-                        <img src={recipe.photo} alt={recipe.title} />
-                      </div>
-                      <table className="recipe-details-table">
-                        <tbody>
-                          <tr>
-                            <td><strong>Preparation Time:</strong></td>
-                            <td>{recipe.preparation_time_in_minutes} minutes</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Cooking Time:</strong></td>
-                            <td>{recipe.cooking_time_in_minutes} minutes</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Serves:</strong></td>
-                            <td>{recipe.serves_persons} persons</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="txt2">
-                      <div className="ingredients">
-                        <h4>Ingredients:</h4>
-                        {recipe.ingredients && recipe.ingredients.length > 0 ? (
-                          recipe.ingredients.map((ingredient, idx) => (
-                            <li key={idx}>{ingredient.quantity} of {ingredient.name}</li>
-                          ))
-                        ) : (
-                          <p>No ingredients available</p>
-                        )}
-                      </div>
-                      <div className="method">
-                        <h4>Cooking Method:</h4>
-                        <p>{recipe.cooking_method}</p>
-                      </div>
+        {activeTab === 'recipes' && (
+          <div className="recipes">
+            {loadingRecipes  ? ( 
+              <div className="loader-container">
+                <Lottie animationData={loadingAnimation} loop={true} />
+              </div>
+            ) : (
+              <>
+                {loadingFish3aData && <span className="loader2"></span>} 
+                
+                {!loadingFish3aData && recipes.length > 0 && (
+                  <div className="recipes-list">
+                    <h2>Recipes for {fishData.fishBaseData?.name}</h2>
+                    <div>
+                      {recipes.map((recipe, index) => (
+                        <div key={index} className="recipe-item">
+                          <h3 className="title-recipe">{recipe.title}</h3>
+                          <div className="image-table">
+                            <div className="recipe-photo">
+                              <img src={recipe.photo} alt={recipe.title} />
+                            </div>
+                            <table className="recipe-details-table">
+                              <tbody>
+                                <tr>
+                                  <td><strong>Preparation Time:</strong></td>
+                                  <td>{recipe.preparation_time_in_minutes} minutes</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Cooking Time:</strong></td>
+                                  <td>{recipe.cooking_time_in_minutes} minutes</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Serves:</strong></td>
+                                  <td>{recipe.serves_persons} persons</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div className="txt2">
+                            <div className="ingredients">
+                              <h4>Ingredients:</h4>
+                              {recipe.ingredients && recipe.ingredients.length > 0 ? (
+                                <ul> 
+                                  {recipe.ingredients.map((ingredient, idx) => (
+                                    <li key={idx}>{ingredient.quantity} of {ingredient.name}</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <p>No ingredients available</p>
+                              )}
+                            </div>
+                            <div className="method">
+                              <h4>Cooking Method:</h4>
+                              <p>{recipe.cooking_method}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+                )}
 
-          {/* Message if no recipes are available */}
-          {!loadingFish3aData && recipes.length === 0 && (
-            <p>No recipes available for this fish.</p>
+                {!loadingFish3aData && recipes.length === 0 && (
+                  <p>No recipes available for this fish.</p>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+
+          {/* grsf Tab */}
+          {activeTab === "grsf" && (
+        <div className="grsf-info">
+          {loadingGRSFData  ? ( 
+            <div className="loader-container">
+              <Lottie animationData={loadingAnimation} loop={true} />
+            </div>
+          ) : (
+            <>
+              {grsfData && grsfData.length > 0 ? (
+                grsfData.map((grsfItem, index) => (
+                  <div key={index} className="grsf-item">
+                    <table className="grsf-details-table">
+                      <thead>
+                        <tr>
+                          <th>Property</th>
+                          <th>Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr onClick={() => handleRowClick(index)} className="clickable-row">
+                          <td>Short Name</td>
+                          <td>{grsfItem.short_name || "N/A"}</td>
+                        </tr>
+
+                        {openedRowIndex === index && (
+                          <>
+                            <tr>
+                              <td>Status</td>
+                              <td>{grsfItem.status || "N/A"}</td>
+                            </tr>
+                            <tr>
+                              <td>Species Code</td>
+                              <td>{grsfItem.species?.species_code || "N/A"}</td>
+                            </tr>
+                            <tr>
+                              <td>Species Name</td>
+                              <td>{grsfItem.species?.species_name || "N/A"}</td>
+                            </tr>
+                            <tr>
+                              <td>Semantic ID</td>
+                              <td>{grsfItem.semantic_id || "N/A"}</td>
+                            </tr>
+                            <tr>
+                              <td>Traceability Flag</td>
+                              <td>{grsfItem.traceability_flag ? "true" : "false"}</td>
+                            </tr>
+                            <tr>
+                              <td>Dissected Fishery</td>
+                              <td>{grsfItem.dissected_fishery ? "true" : "false"}</td>
+                            </tr>
+                            <tr>
+                              <td>SDG Flag</td>
+                              <td>{grsfItem.sdg_flag ? "true" : "false"}</td>
+                            </tr>
+                            <tr>
+                              <td>Source URLs</td>
+                              <td>{grsfItem.source_urls?.length ? grsfItem.source_urls.join(", ") : "N/A"}</td>
+                            </tr>
+                            <tr>
+                              <td>Traceability UUID</td>
+                              <td>{grsfItem.traceability_unit_uuid || "N/A"}</td>
+                            </tr>
+                            <tr>
+                              <td>UUID</td>
+                              <td>{grsfItem.uuid || "N/A"}</td>
+                            </tr>
+                          </>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                ))
+              ) : (
+                <p>No GRSF data available.</p>
+              )}
+            </>
           )}
         </div>
       )}
 
-
-    {activeTab === "grsf" && (
-      <div className="grsf-info">
-        {grsfData && grsfData.length > 0 ? (
-          grsfData.map((grsfItem, index) => (
-            <div key={index} className="grsf-item">
-              <table className="grsf-details-table">
-                <thead>
-                  <tr>
-                    <th>Property</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                <tr onClick={() => handleRowClick(index)} className="clickable-row">
-                <td>Short Name</td>
-                  <td>
-                    {grsfItem.short_name || "N/A"}{" "}
-                  </td>
-                </tr>
-
-                  {openedRowIndex === index && (
-                    <>
-                      <tr>
-                        <td>Status</td>
-                        <td>{grsfItem.status || "N/A"}</td>
-                      </tr>
-                      <tr>
-                        <td>Species Code</td>
-                        <td>{grsfItem.species?.species_code || "N/A"}</td>
-                      </tr>
-                      <tr>
-                        <td>Species Name</td>
-                        <td>{grsfItem.species?.species_name || "N/A"}</td>
-                      </tr>
-                      <tr>
-                        <td>Semantic ID</td>
-                        <td>{grsfItem.semantic_id || "N/A"}</td>
-                      </tr>
-                      <tr>
-                        <td>Traceability Flag</td>
-                        <td>{grsfItem.traceability_flag ? "true" : "false"}</td>
-                      </tr>
-                      <tr>
-                        <td>Dissected Fishery</td>
-                        <td>{grsfItem.dissected_fishery ? "true" : "false"}</td>
-                      </tr>
-                      <tr>
-                        <td>SDG Flag</td>
-                        <td>{grsfItem.sdg_flag ? "true" : "false"}</td>
-                      </tr>
-                      <tr>
-                        <td>Source URLs</td>
-                        <td>{grsfItem.source_urls?.length ? grsfItem.source_urls.join(", ") : "N/A"}</td>
-                      </tr>
-                      <tr>
-                        <td>Traceability UUID</td>
-                        <td>{grsfItem.traceability_unit_uuid || "N/A"}</td>
-                      </tr>
-                      <tr>
-                        <td>UUID</td>
-                        <td>{grsfItem.uuid || "N/A"}</td>
-                      </tr>
-                    </>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          ))
-        ) : (
-          <p></p>
-        )}
-      </div>
-    )}
 
 
 
