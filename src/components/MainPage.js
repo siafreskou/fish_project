@@ -1,6 +1,5 @@
 import "../App.css";
 import { useResponsive } from 'ahooks';
-import Map from "./Maps";
 import Searchbar from "./SearchBar";
 import "./MainPage.css";
 
