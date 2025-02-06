@@ -22,7 +22,6 @@ const FishDetails = () => {
   const [showMore, setShowMore] = useState(false);
   const responsiveInfo = useResponsive();
   const {xs} = responsiveInfo;
-  // const [showRecipes, setShowRecipes] = useState(false);
   const [recipes, setRecipes] = useState([]);  
   const [activeTab, setActiveTab] = useState("fish");
   const [loadingGRSFData, setLoadingGRSFData] = useState(true);
@@ -32,17 +31,17 @@ const FishDetails = () => {
 
  
 
-  const GRSFComponent = ({ activeTab, loadingGRSFData, fishData }) => {
-    const [showMore, setShowMore] = useState(Array(fishData.GRSF.length).fill(false));
+  // const GRSFComponent = ({ activeTab, loadingGRSFData, fishData }) => {
+  //   const [showMore, setShowMore] = useState(Array(fishData.GRSF.length).fill(false));
   
-    const handleToggle = (index) => {
-      setShowMore((prevState) => {
-        const newState = [...prevState];
-        newState[index] = !newState[index];
-        return newState;
-      });
-    };
-  };
+  //   const handleToggle = (index) => {
+  //     setShowMore((prevState) => {
+  //       const newState = [...prevState];
+  //       newState[index] = !newState[index];
+  //       return newState;
+  //     });
+  //   };
+  // };
   
 
 
@@ -486,8 +485,7 @@ const FishDetails = () => {
                     <table className="grsf-details-table">
                       <thead>
                         <tr>
-                          <th>Property</th>
-                          <th>Value</th>
+                          <th colSpan="2">GRSF fishery</th>
                         </tr>
                       </thead>
                       <tbody>
