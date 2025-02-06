@@ -7,7 +7,8 @@ import axios from "axios";
 import "./SearchBar.css";
 import InputField from "./AdvancedComponents/InputField";
 
-const CSV_FILE_PATH = "/GRSF_common_names.csv";
+const CSV_FILE_PATH = process.env.PUBLIC_URL + "/GRSF_common_names.csv";
+
 
 const Searchbar = () => {
   const [fishList, setFishList] = useState([]);
@@ -35,7 +36,6 @@ const Searchbar = () => {
     setIsAdvancedOpen(!isAdvancedOpen);
   };
 
-  // Fetch CSV data
   useEffect(() => {
     Papa.parse(CSV_FILE_PATH, {
       download: true,
@@ -51,7 +51,6 @@ const Searchbar = () => {
     });
   }, []);
 
-  // Close suggestions when clicking outside the search bar
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
