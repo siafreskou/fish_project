@@ -21,7 +21,7 @@ const FishDetails = () => {
   const [hasData, setHasData] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const responsiveInfo = useResponsive();
-  const {xs} = responsiveInfo;
+  const {xs,sm,md,lg} = responsiveInfo;
   const [recipes, setRecipes] = useState([]);  
   const [activeTab, setActiveTab] = useState("fish");
   const [loadingGRSFData, setLoadingGRSFData] = useState(true);
@@ -29,20 +29,16 @@ const FishDetails = () => {
   const [loadingRecipes, setLoadingRecipes] = useState(true);
   const [loadingGrsf, setLoadingGrsf] = useState(true);
 
+  const firstTagsClass =`first_tags ${!md ? "small-screen" : ""}`
+  
  
+  const calculateGRSFWidth = () =>{
 
-  // const GRSFComponent = ({ activeTab, loadingGRSFData, fishData }) => {
-  //   const [showMore, setShowMore] = useState(Array(fishData.GRSF.length).fill(false));
-  
-  //   const handleToggle = (index) => {
-  //     setShowMore((prevState) => {
-  //       const newState = [...prevState];
-  //       newState[index] = !newState[index];
-  //       return newState;
-  //     });
-  //   };
-  // };
-  
+    if(!lg && md) return "grsf-details-table md"
+    if(!md) return "grsf-details-table sm"
+
+    return "grsf-details-table" 
+  }
 
 
   const CustomNextArrow = ({ className, style, onClick }) => {
@@ -104,6 +100,20 @@ const FishDetails = () => {
           slidesToScroll: 1,
         },
       },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      },
+      {
+        breakpoint: 320,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
     ],
   };
 
@@ -331,18 +341,16 @@ const FishDetails = () => {
 
           {fishData.fishBaseData && (
             <div className="info_container">
-              <div className={`first_tags ${xs ? "first-tags-xs" : ""}`}>
+              <div className={firstTagsClass}>
                 <Tag info={fishData.fishBaseData} type="max_age" />
                 <Tag info={fishData.fishBaseData} type="max_depth" />
                 <Tag info={fishData.fishBaseData} type="max_length" />
-              </div>
-
-              <div className="second_tags">
                 <Tag info={fishData.fishBaseData} type="max_weight" />
                 <Tag info={fishData.fishBaseData} type="average_length" />
                 <Tag info={fishData.fishBaseData} type="status" />
               </div>
 
+            <div className="text_wrapper">
               <div className="text_container">
                 <Text info={fishData.fishBaseData} type="name" />
                 <Text info={fishData.fishBaseData} type="environment" />
@@ -392,6 +400,7 @@ const FishDetails = () => {
                     </button>
                   )}
                 </div>
+              </div>
               </div>
             </div>
           )}
@@ -482,7 +491,7 @@ const FishDetails = () => {
               {grsfData && grsfData.length > 0 ? (
                 grsfData.map((grsfItem, index) => (
                   <div key={index} className="grsf-item">
-                    <table className="grsf-details-table">
+                    <table className={calculateGRSFWidth()}>
                       <thead>
                         <tr>
                           <th colSpan="2">GRSF fishery</th>

@@ -8,7 +8,7 @@ import ListFishes from "./components/ListFishes/ListFishes";
 function App() {
   return (
     <div className="App">
-      <div className="navbar">
+      <div className="navbar-container">
         
         <Navbar />
       </div>

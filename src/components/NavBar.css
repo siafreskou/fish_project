@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 0px 5px 20px;
+   
     color: white;
     width: 100%;
   }
@@ -13,6 +13,10 @@
     height: 60px;
     left: 90px;
     top: 0px;
+  }
+
+  .app-name{
+    padding: 5px 0px 5px 20px;
   }
 
   .app-name h1{
