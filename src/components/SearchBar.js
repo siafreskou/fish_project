@@ -224,7 +224,7 @@ const Searchbar = () => {
           <FaSearch className="search-icon" />
           <input
             className="input-field"
-            placeholder="Type to search..."
+            placeholder="Type the name of a fish..."
             value={searchTerm}
             onChange={handleSearchChange}
             onKeyDown={handleKeyDown}
