@@ -301,7 +301,7 @@ const Searchbar = () => {
       )}
 
       {filteredFishes.length > 0 && (
-        <div className="suggestions-list">
+        <div className={`suggestions-list ${xl ? "xl-suggestions" : ""}`}>
           {filteredFishes.map((fish, index) => (
             <li key={index} className="suggestion-item" onClick={() => handleFishClick(fish)}>
               {fish}
