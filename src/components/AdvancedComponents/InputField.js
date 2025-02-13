@@ -1,6 +1,6 @@
 import "./InputField.css";
 const InputField = ({ type, value, onChange }) => {
-    // Map type to titles
+
     const Title = (type) => {
       if (type === "flag_state_name") return "Country";
       if (type === "age") return "Age";
@@ -15,7 +15,6 @@ const InputField = ({ type, value, onChange }) => {
       return "";
     };
   
-    // Map type to input fields
     const Input = (type) => {
       if (type === "flag_state_name") {
         return (
@@ -162,7 +161,6 @@ const InputField = ({ type, value, onChange }) => {
       return null;
     };
   
-    // Log value and type for debugging purposes
     console.log(`InputField - Type: ${type}, Value: ${value}`);
   
     return (

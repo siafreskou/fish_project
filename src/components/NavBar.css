@@ -11,7 +11,7 @@
   .navbar img{
     position: relative;
     height: 60px;
-    left: 90px;
+    left: 70px;
     top: 0px;
   }
 
@@ -22,6 +22,5 @@
   .app-name h1{
     margin: -5px 0 0 0;
     position: relative;
-    top: 40px; /* Move the h1 down by 10px */
-    /* margin-left: 40px; */
+    top: 40px; 
   }

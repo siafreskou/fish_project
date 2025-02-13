@@ -66,18 +66,6 @@
 
   }
 
-  /* .first-tags-xs{
-    display: none;
-  } */
-
-  /* .second_tags{
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    gap: 90px;
-    margin-top: 30px;
-  } */
 
   .text_wrapper{
 
@@ -89,8 +77,6 @@
 
   .text_container {
     margin-top: 40px; 
-    /* margin-left: 260px;
-    margin-right: 260px; */
     border: 1px solid rgb(0, 0, 0);
     padding-block-end: 40px;
     border-radius: 5px;
@@ -193,7 +179,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* margin-left: 100px; */
   border: 2px solid #333;
   width: 90%;
 
@@ -280,12 +265,12 @@
 }
 
 .tab-btn.active {
-  color: #007bff;
-  border-bottom: 3px solid #007bff; 
+  color: #1d3272;
+  border-bottom: 3px solid #1d3272; 
 }
 
 .tab-btn:hover {
-  color: #007bff;
+  color: #2a3d75;
 }
 
 .recipes {
@@ -419,64 +404,3 @@
 }
 
 
-/* .loader2 {
-  color: #0c4edd;
-  font-size: 10px;
-  width: 1em;
-  height: 1em;
-  border-radius: 50%;
-  position: relative;
-  text-indent: -9999em;
-  animation: mulShdSpin 1.3s infinite linear;
-  transform: translateZ(0);
-}
-
-@keyframes mulShdSpin {
-  0%,
-  100% {
-    box-shadow: 0 -3em 0 0.2em, 
-    2em -2em 0 0em, 3em 0 0 -1em, 
-    2em 2em 0 -1em, 0 3em 0 -1em, 
-    -2em 2em 0 -1em, -3em 0 0 -1em, 
-    -2em -2em 0 0;
-  }
-  12.5% {
-    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 
-    3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, 
-    -2em 2em 0 -1em, -3em 0 0 -1em, 
-    -2em -2em 0 -1em;
-  }
-  25% {
-    box-shadow: 0 -3em 0 -0.5em, 
-    2em -2em 0 0, 3em 0 0 0.2em, 
-    2em 2em 0 0, 0 3em 0 -1em, 
-    -2em 2em 0 -1em, -3em 0 0 -1em, 
-    -2em -2em 0 -1em;
-  }
-  37.5% {
-    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
-     3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, 
-     -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
-  }
-  50% {
-    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
-     3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, 
-     -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
-  }
-  62.5% {
-    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
-     3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, 
-     -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
-  }
-  75% {
-    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 
-    3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, 
-    -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
-  }
-  87.5% {
-    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 
-    3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, 
-    -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
-  }
-} */
-  

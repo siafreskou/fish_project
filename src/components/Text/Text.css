@@ -2,8 +2,7 @@
 {
     width: 80%;
     margin:10px;
-    /* padding-top: 50px;
-    margin-right: 50px; */
+
     
     .title{
         display: flex;
@@ -19,12 +18,11 @@
         padding-top:5px ;
         font-size: 18px;
         justify-content:flex-start;
-        /* padding-left: 80px; */
         text-align: start;
         
     }
 
     .txt .last-item {
-        margin-right: auto; /* Pushes items away from the right edge */
+        margin-right: auto; 
       }
 }
