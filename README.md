@@ -33,6 +33,34 @@ You may also see any lint errors in the console.
 - Step 4: Start the corresponding container
 `docker run -p 3000:3000 verifish-app`
 
+## Handling CORS Issues
+
+- Step1: Create a Chrome Shortcut on Desktop:
+   - Open the "Start Menu" and search for "Google Chrome".
+   - Right-click on Chrome and select "Open File Location".
+   - Right-click on `chrome.exe` and select "Create Shortcut".
+   - If prompted, click "Yes".
+
+- Step2: Modify Chrome Shortcut Properties:
+   - Right-click on the newly created Chrome shortcut.
+   - Click "Properties".
+   - Go to the "Shortcut" tab.
+   - Locate the "Target" field.
+
+   By default, it should look like this:
+   ```
+   "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+   ```
+
+-Step 3: Add Flags to Disable Web Security:
+   Modify the "Target" field by adding these flags at the end:
+   ```
+   "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir="C:/ChromeDevSession"
+   ```
+   Note: Make sure there's a space before `--disable-web-security`.
+   - Click "Apply" and then "OK".
+
+
 ## Available Scripts
 
 ### `npm run build`
