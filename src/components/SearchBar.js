@@ -19,7 +19,7 @@ const Searchbar = () => {
   const searchBarRef = useRef();
   const navigate = useNavigate();
   const responsiveInfo = useResponsive();
-  const { xl } = responsiveInfo;
+  const { xl , xs,lg,md,sm} = responsiveInfo;
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [flag_state_nameValue, setFlag_state_nameValue] = useState("");
   const [ageValue, setAgeValue] = useState("");
@@ -218,7 +218,13 @@ const Searchbar = () => {
   };
 
   return (
-    <div className={`search-container ${xl ? "xl-screen" : ""}`} ref={searchBarRef}>
+    <div
+    className={`search-container ${
+      xl ? "xl-screen" : lg ? "lg-screen" : md ? "md-screen" : sm ? "sm-screen" : "xs-screen"
+    }`}
+    ref={searchBarRef}
+  >
+  
       <div className="search_withButton">
         <div className="input-container">
           <FaSearch className="search-icon" />
