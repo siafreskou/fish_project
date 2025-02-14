@@ -143,3 +143,20 @@
   cursor: pointer;
   margin-top: 20px;
 }
+
+
+.xs-screen-advanced{
+  width: 175px;
+}
+
+.sm-screen-advanced{
+  width: 280px;
+}
+
+.md-screen-advanced{
+  width: 280px;
+}
+
+.lg-screen-advanced{
+  width: 280px;
+}

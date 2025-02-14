@@ -19,7 +19,7 @@ const Searchbar = () => {
   const searchBarRef = useRef();
   const navigate = useNavigate();
   const responsiveInfo = useResponsive();
-  const { xl , xs,lg,md,sm} = responsiveInfo;
+  const { xl,lg,md,sm} = responsiveInfo;
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [flag_state_nameValue, setFlag_state_nameValue] = useState("");
   const [ageValue, setAgeValue] = useState("");
@@ -249,7 +249,12 @@ const Searchbar = () => {
       </div>
 
       {isAdvancedOpen && (
-        <div className="advanced-search-container">
+        <div
+        className={`advanced-search-container ${
+          xl ? "xl-screen-advanced" : lg ? "lg-screen-advanced" : md ? "md-screen-advanced" : sm ? "sm-screen-advanced" : "xs-screen-advanced"
+        }`}
+        ref={searchBarRef}
+      >
           <h3>Advanced Search</h3>
           <div className="advanced-search-fields">
             <InputField
