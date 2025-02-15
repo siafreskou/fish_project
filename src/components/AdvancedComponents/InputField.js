@@ -3,9 +3,9 @@ const InputField = ({ type, value, onChange }) => {
 
     const Title = (type) => {
       if (type === "flag_state_name") return "Country";
-      if (type === "age") return "Age";
-      if (type === "weight") return "Weight";
-      if (type === "length") return "Length";
+      if (type === "age") return "Maximum Age";
+      if (type === "weight") return "Maximum Weight";
+      if (type === "length") return "Maximum Length";
       if (type === "status") return "IUCN Status";
       if (type === "depth") return "Minimum Depth";
       if (type === "depth2") return "Maximum Depth";
