@@ -31,6 +31,9 @@ const Searchbar = () => {
   const [threat_to_humansValue, setthreat_to_humansValue] = useState("");
   const [climate_zoneValue, setclimate_zoneValue] = useState("");
   const [environmentValue, setenvironmentValue] = useState("");
+  const [max_weight_compValue, setmax_weight_compValue] = useState("");
+  const [max_length_compValue, setmax_length_compValue] = useState("");
+  const [max_age_compValue, setmax_age_compValue] = useState("");
 
   const toggleAdvancedSearch = () => {
     setIsAdvancedOpen(!isAdvancedOpen);
@@ -67,8 +70,10 @@ const Searchbar = () => {
     setFilteredFishes([]);
     setLoading(true);
     setNoFishFound(false);
+  
     const params = new URLSearchParams();
     if (fish && fish.trim()) params.append("common_name", fish);
+  
     if (advancedParams) {
       if (advancedParams.flag_state_name) params.append("flag_state_name", advancedParams.flag_state_name);
       if (advancedParams.age) params.append("max_age", advancedParams.age);
@@ -80,8 +85,11 @@ const Searchbar = () => {
       if (advancedParams.threat_to_humans) params.append("threat_to_humans", advancedParams.threat_to_humans);
       if (advancedParams.climate_zone) params.append("climate_zone", advancedParams.climate_zone);
       if (advancedParams.environment) params.append("environment", advancedParams.environment);
+      if (advancedParams.max_weight_comp) params.append("max_weight_comp", advancedParams.max_weight_comp);
+      if (advancedParams.max_length_comp) params.append("max_length_comp", advancedParams.max_length_comp);
+      if (advancedParams.max_age_comp) params.append("max_age_comp", advancedParams.max_age_comp);
     }
-
+  
     axios
       .get(
         `https://demos.isl.ics.forth.gr/verifish/verifish-api/resources/fishbase_search?${params.toString()}`,
@@ -125,6 +133,9 @@ const Searchbar = () => {
       threat_to_humans: threat_to_humansValue,
       climate_zone: climate_zoneValue,
       environment: environmentValue,
+      max_weight_comp: max_weight_compValue,
+      max_length_comp: max_length_compValue,
+      max_age_comp: max_age_compValue,
     };
 
     if (searchValue && !/\s/.test(searchValue)) {
@@ -202,6 +213,15 @@ const Searchbar = () => {
     } else if (type === "environment") {
       setenvironmentValue(value);
     }
+    else if (type === "max_weight_comp") {
+      setmax_weight_compValue(value);
+    }
+    else if (type === "max_length_comp") {
+      setmax_length_compValue(value);
+    }
+    else if (type === "max_age_comp") {
+      setmax_age_compValue(value);
+    }
 
     console.log({
       flag_state_nameValue,
@@ -214,6 +234,9 @@ const Searchbar = () => {
       threat_to_humansValue,
       climate_zoneValue,
       environmentValue,
+      max_weight_compValue,
+      max_length_compValue,
+      max_age_compValue,
     });
   };
 
@@ -262,27 +285,27 @@ const Searchbar = () => {
               value={flag_state_nameValue}
               onChange={(e) => handleInputChange(e.target.value, "flag_state_name")}
             />
-            <InputField
+            {/* <InputField
               type="age"
               value={ageValue}
               onChange={(e) => handleInputChange(e.target.value, "age")}
-            />
-            <InputField
+            /> */}
+            {/* <InputField
               type="weight"
               value={weightValue}
               onChange={(e) => handleInputChange(e.target.value, "weight")}
-            />
-            <InputField
+            /> */}
+            {/* <InputField
               type="length"
               value={lengthValue}
               onChange={(e) => handleInputChange(e.target.value, "length")}
-            />
+            /> */}
             <InputField
               type="status"
               value={statusValue}
               onChange={(e) => handleInputChange(e.target.value, "status")}
             />
-            <InputField
+            {/* <InputField
               type="depth"
               value={depthValue}
               onChange={(e) => handleInputChange(e.target.value, "depth")}
@@ -291,7 +314,57 @@ const Searchbar = () => {
               type="depth2"
               value={depth2Value}
               onChange={(e) => handleInputChange(e.target.value, "depth2")}
-            />
+            /> */}
+
+            <div className="depth-section">
+              <label className="depth-label">Depth (m)</label>
+              <div className="depth-fields">
+                <input placeholder="At least..." type="number" value={depthValue} onChange={(e) => handleInputChange(e.target.value, "depth")} />
+                <input placeholder="At most..." type="number" value={depth2Value} onChange={(e) => handleInputChange(e.target.value, "depth2")} />
+              </div>
+            </div>
+
+            <div className="length-section">
+              <label className="length-label">Length (cm)</label>
+              <div className="length-fields">
+                <select value={max_length_compValue} onChange={(e) => handleInputChange(e.target.value, "max_length_comp")}>
+                  <option value="">-</option>
+                  <option value="at_least">At Least</option>
+                  <option value="at_most">At Most</option>
+                </select>
+              
+                <input type="number" placeholder="Enter length..." value={lengthValue} onChange={(e) => handleInputChange(e.target.value, "length")} />
+              </div>
+            </div>
+
+
+            <div className="weight-section">
+              <label className="weight-label">Weight (kg)</label>
+              <div className="weight-fields">
+                <select value={max_weight_compValue} onChange={(e) => handleInputChange(e.target.value, "max_weight_comp")}>
+                  <option value="">-</option>
+                  <option value="at_least">At Least</option>
+                  <option value="at_most">At Most</option>
+                </select>
+              
+                <input type="number" placeholder="Enter weight..." value={weightValue} onChange={(e) => handleInputChange(e.target.value, "weight")} />
+              </div>
+            </div>
+
+            <div className="age-section">
+              <label className="age-label">Age (years)</label>
+              <div className="age-fields">
+                <select value={max_age_compValue} onChange={(e) => handleInputChange(e.target.value, "max_age_comp")}>
+                  <option value="">-</option>
+                  <option value="at_least">At Least</option>
+                  <option value="at_most">At Most</option>
+                </select>
+              
+                <input type="number" placeholder="Enter age..." value={ageValue} onChange={(e) => handleInputChange(e.target.value, "age")} />
+              </div>
+            </div>
+
+
             <InputField
               type="threat_to_humans"
               value={threat_to_humansValue}
@@ -331,10 +404,3 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
-
-
-
-
-
-
-

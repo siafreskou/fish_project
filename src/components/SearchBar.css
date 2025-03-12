@@ -160,3 +160,79 @@
 .lg-screen-advanced{
   width: 280px;
 }
+
+
+
+.depth-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.depth-label {
+  align-items: flex-start;
+}
+
+.depth-fields {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.advanced-search-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; 
+}
+
+
+.length-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.length-label {
+  align-items: flex-start;
+}
+
+.length-fields {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+.weight-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.weight-label {
+  align-items: flex-start;
+}
+
+.weight-fields {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+.age-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.age-label {
+  align-items: flex-start;
+}
+
+.age-fields {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
